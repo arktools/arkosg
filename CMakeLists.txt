@@ -32,8 +32,38 @@ include(DefineCMakeDefaults)
 include(DefinePlatformDefaults)
 include(DefineCompilerFlags)
 include(DefineInstallationPaths)
-include(DefineOptions.cmake)
-include(CPackConfig.cmake)
+
+# cpack
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "arkTools openscenegraph module")
+set(CPACK_PACKAGE_VENDOR "arkTools")
+set(CPACK_PACKAGE_CONTACT "james.goppert@gmail.com")
+set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README")
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/COPYING")
+set(CPACK_PACKAGE_VERSION_MAJOR "${APPLICATION_VERSION_MAJOR}") 
+set(CPACK_PACKAGE_VERSION_MINOR "${APPLICATION_VERSION_MINOR}")
+set(CPACK_PACKAGE_VERSION_PATCH "${APPLICATION_VERSION_PATCH}")
+set(CPACK_PACKAGE_INSTALL_DIRECTORY "CMake ${CMake_VERSION_MAJOR}.${CMake_VERSION_MINOR}")
+#if(WIN32 and not UNIX)
+  ## There is a bug in NSI that does not handle full unix paths properly. Make
+  ## sure there is at least one set of four (4) backlasshes.
+  #set(CPACK_PACKAGE_ICON "${CMake_SOURCE_DIR}/Utilities/Release\\\\InstallIcon.bmp")
+  #set(CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\MyExecutable.exe")
+  #set(CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY} ${PROJECT_NAME}")
+  #set(CPACK_NSIS_HELP_LINK "http:\\\\\\\\www.my-project-home-page.org")
+  #set(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\www.my-personal-home-page.com")
+  #set(CPACK_NSIS_CONTACT "me@my-personal-home-page.com")
+  #set(CPACK_NSIS_MODIFY_PATH ON)
+#else(WIN32 and not UNIX)
+  #set(CPACK_STRIP_FILES "bin/MyExecutable")
+  #set(CPACK_SOURCE_STRIP_FILES "")
+#endif(WIN32 and not UNIX)
+#set(CPACK_PACKAGE_EXECUTABLES "MyExecutable" "My Executable")
+include(CPack)
+
+# Options
+option(WITH_OSG "Build with openscenegraph support" ON)
+option(WITH_SCICOSLAB "Build scicoslab toolbox" ON)
+option(WITH_TESTING "Build with unit tests" OFF)
 
 # disallow in-source build
 include(MacroEnsureOutOfSourceBuild)
@@ -102,19 +132,20 @@ if(IN_SRC_BUILD)
 	set(BINDIR ${CMAKE_BINARY_DIR}/bin)
 else()
 	message(STATUS "configuring for install build")
-	set(DATADIR ${CMAKE_INSTALL_PREFIX}/share/mavsim/data)
+	set(DATADIR ${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME}/data)
 	set(LIBDIR ${CMAKE_INSTALL_PREFIX}/lib)
 	set(BINDIR ${CMAKE_INSTALL_PREFIX}/bin)
 endif()
 
 # install data files
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/data"
-	DESTINATION share/mavsim
+	DESTINATION share/${PROJECT_NAME}
 	PATTERN "*.git*" EXCLUDE)
 
 # pkgconfig
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}.pc.cmake ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc)
 install(FILES
-	${PROJECT_NAME}.pc
+	${PROJECT_BINARY_DIR}/${PROJECT_NAME}.pc
 	DESTINATION lib/pkgconfig
 	)
 

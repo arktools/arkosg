@@ -34,4 +34,4 @@ set_target_properties(arkOsg PROPERTIES VERSION ${LIBRARY_VERSION}
 	SOVERSION ${LIBRARY_SOVERSION})
 
 install(TARGETS arkOsg DESTINATION lib)
-install(FILES ${arkOsgHeaders} DESTINATION include/mavsim/visualization)
+install(FILES ${arkOsgHeaders} DESTINATION include/arkOsg)
