@@ -9,29 +9,29 @@ link_libraries(${OPENSCENEGRAPH_LIBRARIES}
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
-set(arkOsgSource
+set(${PROJECT_NAME}Source
 	osgUtils.cpp
 	Viewer.cpp
 	)
 
-set(arkOsgHeaders
+set(${PROJECT_NAME}Headers
 	osgUtils.hpp
 	Viewer.hpp
 	)
 
 if(QT_FOUND)
-	list(APPEND arkOsgSource
+	list(APPEND ${PROJECT_NAME}Source
 		QOSGAdapterWidget.cpp
 	)
-	list(APPEND arkOsgHeaders
+	list(APPEND ${PROJECT_NAME}Headers
 		QOSGAdapterWidget.hpp
 	)
 endif(QT_FOUND)
 
-add_library(arkOsg SHARED ${arkOsgSource})
+add_library(${PROJECT_NAME} SHARED ${${PROJECT_NAME}Source})
 
-set_target_properties(arkOsg PROPERTIES VERSION ${LIBRARY_VERSION}
+set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${LIBRARY_VERSION}
 	SOVERSION ${LIBRARY_SOVERSION})
 
-install(TARGETS arkOsg DESTINATION lib)
-install(FILES ${arkOsgHeaders} DESTINATION include/arkOsg)
+install(TARGETS ${PROJECT_NAME} DESTINATION lib)
+install(FILES ${${PROJECT_NAME}Headers} DESTINATION include/${PROJECT_NAME})
