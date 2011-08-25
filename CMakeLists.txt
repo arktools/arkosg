@@ -83,6 +83,7 @@ endif()
 
 # find libraries with cmake modules
 find_package(Qt4)
+find_package(Boost 1.40.0 REQUIRED COMPONENTS thread-mt system-mt)
 set(QT_USE_QTOPENGL TRUE)
 set(QT_USE_QTUITOOLS TRUE)
 find_package(OpenGL)
@@ -130,6 +131,12 @@ endif()
 message(STATUS "\tQT4\t\t${QT4_FOUND}")
 if (QT4_FOUND)
 endif ()
+
+message(STATUS "\tBoost\t\t${Boost_FOUND}")
+if (Boost_FOUND)
+endif ()
+
+
 
 message(STATUS "=================================")
 
