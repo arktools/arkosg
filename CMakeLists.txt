@@ -137,4 +137,4 @@ message(STATUS "=================================")
 include_directories( ${PROJECT_SOURCE_DIR}/src ${PROJECT_BINARY_DIR}/src)
 
 # subdirectories
-#add_subdirectory(src)
+add_subdirectory(src)
