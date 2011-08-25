@@ -34,6 +34,7 @@ include(DefineCompilerFlags)
 include(DefineInstallationPaths)
 
 # cpack
+include(CPack)
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "arkTools openscenegraph module")
 set(CPACK_PACKAGE_VENDOR "arkTools")
 set(CPACK_PACKAGE_CONTACT "james.goppert@gmail.com")
@@ -58,7 +59,6 @@ set(CPACK_PACKAGE_INSTALL_DIRECTORY "CMake ${CMake_VERSION_MAJOR}.${CMake_VERSIO
   #set(CPACK_SOURCE_STRIP_FILES "")
 #endif(WIN32 and not UNIX)
 #set(CPACK_PACKAGE_EXECUTABLES "MyExecutable" "My Executable")
-include(CPack)
 
 # Options
 option(WITH_OSG "Build with openscenegraph support" ON)
