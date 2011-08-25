@@ -1,0 +1,6 @@
+[submodule "Modules"]
+	path = arkCMake
+	url = git://github.com/jgoppert/arkCMake.git
+[submodule "cmake/arkCMake"]
+	path = cmake/arkCMake
+	url = git://github.com/jgoppert/arkCMake.git
