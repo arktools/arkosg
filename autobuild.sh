@@ -28,10 +28,8 @@ do
 	elif [ $OPT = "grab_debian_dependencies" ] &> /dev/null
 	then
 		echo you chose to install debian dependencies
-		sudo apt-get install cmake libqt4-dev simgear-dev liblapack-dev libboost-all-dev libopenscenegraph-dev gfortran
+		sudo apt-get install cmake libqt4-dev libboost-all-dev libopenscenegraph-dev
 		sudo apt-get install libgl1-mesa-dri libgl1-mesa-glx libglu1-mesa 
-		sudo apt-get install automake libtool
-		sudo apt-get install scicoslab-gtk
 		exit 0
 
 	elif [ $OPT = "remake" ] &> /dev/null
