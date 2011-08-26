@@ -77,7 +77,7 @@ include(language_support_v2)
 include(MacroAddLinkFlags)
 
 # settings
-MacroSetDefault(IN_SRC_BUILD FALSE)
+option(DEV_MODE "Setup paths for developer testing." OFF)
 
 # built variables
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
@@ -115,7 +115,6 @@ find_package(Boost 1.40.0 REQUIRED COMPONENTS thread-mt system-mt)
 set(QT_USE_QTOPENGL TRUE)
 set(QT_USE_QTUITOOLS TRUE)
 find_package(OpenGL)
-find_package(OpenThreads)
 find_package(OpenSceneGraph 2.8.0 COMPONENTS osgGA osgDB osgUtil osgViewer)
 if ("OSG_LIBRARY-NOTFOUND" STREQUAL "${OSG_LIBRARY}")
     set(OPENSCENEGRAPH_FOUND FALSE)
@@ -124,13 +123,13 @@ else()
 endif()
 
 # data directory
-if(IN_SRC_BUILD)
-	message(STATUS "configuring for in source build")
+if(DEV_MODE)
+	message(STATUS "configuring for developer build")
 	set(DATADIR ${PROJECT_SOURCE_DIR}/data)
 	set(LIBDIR ${CMAKE_BINARY_DIR}/bin)
 	set(BINDIR ${CMAKE_BINARY_DIR}/bin)
 else()
-	message(STATUS "configuring for install build")
+	message(STATUS "configuring for standard build")
 	set(DATADIR ${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME}/data)
 	set(LIBDIR ${CMAKE_INSTALL_PREFIX}/lib)
 	set(BINDIR ${CMAKE_INSTALL_PREFIX}/bin)

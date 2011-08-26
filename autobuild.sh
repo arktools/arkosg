@@ -1,12 +1,12 @@
 #!/bin/bash
 
 PS3='Please enter your choice: '
-LIST="in_source_build install_build grab_debian_dependencies package_source \
+LIST="developer_build build grab_debian_dependencies package_source \
 	package remake test clean END"
 MAKEARGS="-j8"
 echo 
-echo 1\)in_source_build: is used for development and you can start the scicoslab toolbox by typing scicoslab in the mavsim source directory
-echo 2.\)install_build: is used for building before final installation to the system.
+echo 1\)developer_build: is used for development and you can start the scicoslab toolbox by typing scicoslab in the mavsim source directory
+echo 2.\)build: is used for building before final installation to the system.
 echo 3.\)grab_debian_dependencies: installs all the required packages for debian based systems \(ubuntu maverick/ debian squeeze,lenny\)
 echo 4.\)package_source: creates a source package for distribution
 echo 5.\)package: creates binary packages for distribution
@@ -17,12 +17,12 @@ echo 8.\)clean: removes the build directory
 echo
 select OPT in $LIST
 do
-	if [ $OPT = "in_source_build" ] &> /dev/null
+	if [ $OPT = "developer_build" ] &> /dev/null
 	then
-		echo you chose in source build
-		mkdir -p build && cd build && cmake -DIN_SRC_BUILD:bool=TRUE .. && make $MAKEARGS
+		echo you chose in developer build
+		mkdir -p build && cd build && cmake -DDEV_MODE:bool=TRUE .. && make $MAKEARGS
 		exit 0
-	elif [ $OPT = "install_build" ] &> /dev/null
+	elif [ $OPT = "build" ] &> /dev/null
 	then
 		echo you chose install build
 		mkdir -p build && cd build && cmake .. && make $MAKEARGS

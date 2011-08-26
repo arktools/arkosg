@@ -1,8 +1,8 @@
 prefix=/usr
 exec_prefix=${prefix}
 
-Name: mavsim
-Description: The mavsim library
+Name: arkosg
+Description: The arkOsg library
 Version: 0.1.0
-Cflags: -I${prefix}/include/mavsim
-Libs: -L${exec_prefix}/lib -lmavsimCommunication -lmavsimVisualization
+Cflags: -I${prefix}/include/arkOsg
+Libs: -L${exec_prefix}/lib -larkOsg
