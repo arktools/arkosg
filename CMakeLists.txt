@@ -27,6 +27,9 @@ set(CMAKE_MODULE_PATH
 	${CMAKE_SOURCE_DIR}/cmake/arkCMake
 )
 
+# for testing
+include (CTest)
+
 # add definitions
 include(DefineCMakeDefaults)
 include(DefinePlatformDefaults)
@@ -59,11 +62,6 @@ set(CPACK_PACKAGE_INSTALL_DIRECTORY "CMake ${CMake_VERSION_MAJOR}.${CMake_VERSIO
   #set(CPACK_SOURCE_STRIP_FILES "")
 #endif(WIN32 and not UNIX)
 #set(CPACK_PACKAGE_EXECUTABLES "MyExecutable" "My Executable")
-
-# Options
-option(WITH_OSG "Build with openscenegraph support" ON)
-option(WITH_SCICOSLAB "Build scicoslab toolbox" ON)
-option(WITH_TESTING "Build with unit tests" OFF)
 
 # disallow in-source build
 include(MacroEnsureOutOfSourceBuild)
@@ -117,6 +115,7 @@ find_package(Boost 1.40.0 REQUIRED COMPONENTS thread-mt system-mt)
 set(QT_USE_QTOPENGL TRUE)
 set(QT_USE_QTUITOOLS TRUE)
 find_package(OpenGL)
+find_package(OpenThreads)
 find_package(OpenSceneGraph 2.8.0 COMPONENTS osgGA osgDB osgUtil osgViewer)
 if ("OSG_LIBRARY-NOTFOUND" STREQUAL "${OSG_LIBRARY}")
     set(OPENSCENEGRAPH_FOUND FALSE)
@@ -176,3 +175,7 @@ include_directories( ${PROJECT_SOURCE_DIR}/src ${PROJECT_BINARY_DIR}/src)
 
 # subdirectories
 add_subdirectory(src)
+
+if (BUILD_TESTING)
+	add_subdirectory(test)
+endif ()

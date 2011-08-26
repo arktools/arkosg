@@ -1,7 +1,8 @@
 #!/bin/bash
 
 PS3='Please enter your choice: '
-LIST="in_source_build install_build grab_debian_dependencies package_source package remake clean END"
+LIST="in_source_build install_build grab_debian_dependencies package_source \
+	package remake test clean END"
 MAKEARGS="-j8"
 echo 
 echo 1\)in_source_build: is used for development and you can start the scicoslab toolbox by typing scicoslab in the mavsim source directory
@@ -10,7 +11,8 @@ echo 3.\)grab_debian_dependencies: installs all the required packages for debian
 echo 4.\)package_source: creates a source package for distribution
 echo 5.\)package: creates binary packages for distribution
 echo 6.\)remake: calls make again after project has been configured as install or in source build
-echo 7.\)clean: removes the build directory 
+echo 7.\)test: run tests 
+echo 8.\)clean: removes the build directory 
 
 echo
 select OPT in $LIST
@@ -48,6 +50,12 @@ do
 	then
 		echo you chose to package the binary
 		mkdir -p build && cd build && cmake .. && make package
+		exit 0
+
+	elif [ $OPT = "test" ] &> /dev/null
+	then
+		echo you chose to run the test suite 
+		cd build && ctest
 		exit 0
 
 	elif [ $OPT = "clean" ] &> /dev/null
