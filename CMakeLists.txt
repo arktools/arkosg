@@ -31,6 +31,9 @@ set(CMAKE_MODULE_PATH
 # for testing
 include (CTest)
 
+# make shared library building optional
+option(BUILD_SHARED_LIBS false)
+
 # add definitions
 include(DefineCMakeDefaults)
 include(DefinePlatformDefaults)
