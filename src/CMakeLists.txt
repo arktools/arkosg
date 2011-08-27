@@ -28,7 +28,7 @@ if(QT_FOUND)
 	)
 endif(QT_FOUND)
 
-add_library(${PROJECT_NAME} SHARED ${${PROJECT_NAME}Source})
+add_library(${PROJECT_NAME} STATIC ${${PROJECT_NAME}Source})
 
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${LIBRARY_VERSION}
 	SOVERSION ${LIBRARY_SOVERSION})
