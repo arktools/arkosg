@@ -1,4 +1,4 @@
-project (arkOsg)
+project (arkosg)
 
 # Requried cmake version
 cmake_minimum_required (VERSION 2.6)

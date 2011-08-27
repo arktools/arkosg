@@ -32,4 +32,4 @@ set(qtTest_src
 add_definitions(-DUSE_QT4)
 add_executable(qtTest ${qtTest_src})
 add_test(qtTest ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qtTest)
-target_link_libraries(qtTest arkOsg ${QT_LIBRARIES} ${Boost_LIBRARIES})
+target_link_libraries(qtTest arkosg ${QT_LIBRARIES} ${Boost_LIBRARIES})
