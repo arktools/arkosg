@@ -1,8 +1,8 @@
-prefix=/usr
-exec_prefix=${prefix}
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=$@CMAKE_INSTALL_PREFIX@
 
-Name: arkosg
-Description: The arkOsg library
-Version: 0.1.0
-Cflags: -I${prefix}/include/arkOsg
-Libs: -L${exec_prefix}/lib -larkOsg
+Name: @PROJECT_NAME@
+Description: @CPACK_PACKAGE_DESCRIPTION_SUMMARY@
+Version: @APPLICATION_VERSION@
+Cflags: -I@CMAKE_INSTALL_PREFIX@/include/@PROJECT_NAME@
+
