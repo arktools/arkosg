@@ -76,6 +76,7 @@ include(MacroSetDefault)
 include(language_support_v2)
 include(MacroAddLinkFlags)
 include (CTest)
+include(FeatureSummary)
 include(ExternalProject)
 
 # settings
