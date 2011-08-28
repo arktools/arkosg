@@ -28,9 +28,6 @@ set(CMAKE_MODULE_PATH
 	${CMAKE_SOURCE_DIR}/cmake/arkcmake
 )
 
-# for testing
-include (CTest)
-
 # make shared library building optional
 option(BUILD_SHARED_LIBS false)
 
@@ -75,13 +72,15 @@ Please create a separate build directory and run 'cmake /path/to/${PROJECT_NAME}
 # add macros
 include(MacroAddPlugin)
 include(MacroCopyFile)
-include(MacroFindOrBuild)
 include(MacroSetDefault)
 include(language_support_v2)
 include(MacroAddLinkFlags)
+include (CTest)
+include(ExternalProject)
 
 # settings
 option(DEV_MODE "Setup paths for developer testing." OFF)
+option(BUILD_SHARED_LIBS "Build shared libraries instead of static." OFF)
 
 # built variables
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
@@ -140,9 +139,7 @@ else()
 endif()
 
 # install data files
-install(DIRECTORY "${PROJECT_SOURCE_DIR}/data"
-	DESTINATION share/${PROJECT_NAME}
-	PATTERN "*.git*" EXCLUDE)
+#install(DIRECTORY "${PROJECT_SOURCE_DIR}/data" DESTINATION share/${PROJECT_NAME} PATTERN "*.git*" EXCLUDE)
 
 # pkgconfig
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/pc.cmake ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc)
@@ -168,8 +165,6 @@ endif ()
 message(STATUS "\tBoost\t\t${Boost_FOUND}")
 if (Boost_FOUND)
 endif ()
-
-
 
 message(STATUS "=================================")
 
