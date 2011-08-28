@@ -101,18 +101,6 @@ enable_language(CXX)
 # add make dist target
 add_custom_target(dist COMMAND ${CMAKE_MAKE_PROGRAM} package_source)
 
-# git submodules
-if(IS_DIRECTORY ${PROJECT_SOURCE_DIR}/.git)
-	message(STATUS "git repository detected, will attempt to load submodules")
-	set(FOUND_GIT_REPO TRUE)
-	add_custom_command(OUTPUT GIT.stamp 
-		COMMAND cd ${PROJECT_SOURCE_DIR} && git submodule init ${GIT_SUBMODULES}
-		COMMAND cd ${PROJECT_SOURCE_DIR} && git submodule update ${GIT_SUBMODULES})
-	add_custom_target(GIT DEPENDS GIT.stamp)
-else()
-	set(FOUND_GIT_REPO FALSE)
-endif()
-
 # find libraries with cmake modules
 find_package(Qt4)
 find_package(Boost 1.40.0 REQUIRED COMPONENTS thread-mt system-mt)
