@@ -148,25 +148,11 @@ install(FILES
 	DESTINATION lib/pkgconfig
 	)
 
-#
-# internal library list definition / dep summary
-message(STATUS "=================================")
-message(STATUS "\tLIBRARY\t\tBUILDING")
-message(STATUS "=================================")
-
-message(STATUS "\tOpenSceneGraph\t${OPENSCENEGRAPH_FOUND}")
-if (OPENSCENEGRAPH_FOUND)
-endif()
-
-message(STATUS "\tQT4\t\t${QT4_FOUND}")
-if (QT4_FOUND)
-endif ()
-
-message(STATUS "\tBoost\t\t${Boost_FOUND}")
-if (Boost_FOUND)
-endif ()
-
-message(STATUS "=================================")
+# summary
+feature_summary(WHAT ENABLED_FEATURES VAR DESCRIPTION "enabled features: " VAR enabledFeaturesText)
+message(STATUS "${enabledFeaturesText}")
+feature_summary(WHAT DISABLED_FEATURES VAR DESCRIPTION "disabled features: " VAR disabledFeaturesText)
+message(STATUS "${disabledFeaturesText}")
 
 # project wide flags
 include_directories( ${PROJECT_SOURCE_DIR}/src ${PROJECT_BINARY_DIR}/src)
