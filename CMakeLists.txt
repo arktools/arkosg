@@ -95,7 +95,6 @@ include(MacroSetDefault)
 include(language_support_v2)
 include(MacroAddLinkFlags)
 include (CTest)
-include(FeatureSummary)
 include(ExternalProject)
 
 # settings
@@ -155,12 +154,6 @@ install(FILES
 	${PROJECT_BINARY_DIR}/${PROJECT_NAME}.pc
 	DESTINATION lib/pkgconfig
 	)
-
-# summary
-feature_summary(WHAT ENABLED_FEATURES VAR DESCRIPTION "enabled features: " VAR enabledFeaturesText)
-message(STATUS "${enabledFeaturesText}")
-feature_summary(WHAT DISABLED_FEATURES VAR DESCRIPTION "disabled features: " VAR disabledFeaturesText)
-message(STATUS "${disabledFeaturesText}")
 
 # project wide flags
 include_directories( ${PROJECT_SOURCE_DIR}/src ${PROJECT_BINARY_DIR}/src)
