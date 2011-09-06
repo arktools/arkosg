@@ -38,7 +38,6 @@ include(DefineCompilerFlags)
 include(DefineInstallationPaths)
 
 # cpack
-include(CPack)
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "arkTools openscenegraph module")
 set(CPACK_PACKAGE_VENDOR "arkTools")
 set(CPACK_PACKAGE_CONTACT "james.goppert@gmail.com")
@@ -66,7 +65,6 @@ elseif(UNIX)
 else()
     message(FATAL_ERROR "unknown operating system")
 endif()
-
 #if(WIN32 and not UNIX)
   ## There is a bug in NSI that does not handle full unix paths properly. Make
   ## sure there is at least one set of four (4) backlasshes.
@@ -82,6 +80,7 @@ endif()
   #set(CPACK_SOURCE_STRIP_FILES "")
 #endif(WIN32 and not UNIX)
 #set(CPACK_PACKAGE_EXECUTABLES "MyExecutable" "My Executable")
+include(CPack)
 
 # disallow in-source build
 include(MacroEnsureOutOfSourceBuild)
