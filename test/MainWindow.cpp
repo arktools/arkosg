@@ -41,7 +41,7 @@ MainWindow::MainWindow() : sceneRoot(new osg::Group)
 	// load plane
     try
     {
-        plane = new mavsim::visualization::Plane;
+        plane = new mavsim::visualization::Plane(DATADIR+std::string("/models/plane.ac"));
         plane->addChild(new mavsim::visualization::Frame(15,"X","Y","Z"));
         sceneRoot->addChild(plane);
     }

@@ -144,7 +144,7 @@ private:
 class Jet : public osg::PositionAttitudeTransform
 {
 public:
-    Jet();
+    Jet(std::string modelFile);
     void setEuler(double roll, double pitch, double yaw);
     void setPositionScalars(double x, double y, double z);
     void setU(double throttle, double aileron, double elevator, double rudder);
@@ -162,7 +162,7 @@ private:
 class Plane : public osg::PositionAttitudeTransform
 {
 public:
-    Plane();
+    Plane(std::string modelFile);
     void setEuler(double roll, double pitch, double yaw);
     void setPositionScalars(double x, double y, double z);
     void setU(double throttle, double aileron, double elevator, double rudder);
@@ -181,7 +181,7 @@ private:
 class Car : public osg::PositionAttitudeTransform
 {
 public:
-    Car();
+    Car(std::string modelFile);
     void setEuler(double roll, double pitch, double yaw);
     void setPositionScalars(double x, double y, double z);
     void setU(double throttle, double steering, double velocity);
@@ -198,7 +198,7 @@ private:
 class Quad : public osg::PositionAttitudeTransform
 {
 public:
-    Quad();
+    Quad(std::string modelFile);
     void setEuler(double roll, double pitch, double yaw);
     void setPositionScalars(double x, double y, double z);
     void setU(double throttleF, double throttleB, double throttleL, double throttleR);

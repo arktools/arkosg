@@ -395,11 +395,10 @@ osg::StateSet* PointCloud::makeStateSet(float size)
     return set;
 }
 
-Jet::Jet() :
+Jet::Jet(std::string modelFile) :
     modelPat(), model(), myLeftAileron(), myRightAileron(),
     myLeftElevator(), myRightElevator(), myRudder()
 {
- 	std::string modelFile(std::string(DATADIR)+"/models/jet.ac");
     model = osgDB::readNodeFile(modelFile);
 	if (!model)
 	{
@@ -441,11 +440,10 @@ void Jet::setU(double throttle, double aileron, double elevator, double rudder)
 	myThrustPlume->setPosition(3-3*throttle,0,0);
 }
 
-Plane::Plane() :
+Plane::Plane(std::string modelFile) :
     model(), myLeftAileron(), myRightAileron(),
     myLeftElevator(), myRightElevator(), myRudder(), propAngle()
 {
- 	std::string modelFile(std::string(DATADIR)+"/models/plane.ac");
     model = osgDB::readNodeFile(modelFile);
 	if (!model)
 	{
@@ -487,14 +485,12 @@ void Plane::setU(double throttle, double aileron, double elevator, double rudder
 	myPropeller->setAttitude(osg::Quat(propAngle+=5*throttle,osg::Vec3(1,0,0)));
 }
 
-Car::Car() :
+Car::Car(std::string modelFile) :
     model(), myWheelLF(), myWheelLB(),
     myWheelRF(), myWheelRB(),
 	myTireAngleLF(), myTireAngleLB(),
 	myTireAngleRF(), myTireAngleRB()
 {
-	std::string modelFile( std::string(DATADIR) + "/models/rcTruck.ac");
-	std::cout << "model file: " << modelFile << std::endl;
     model = osgDB::readNodeFile(modelFile);
 	if (!model)
 	{
@@ -538,12 +534,10 @@ void Car::setU(double throttle, double steering, double velocity)
 	myWheelRB->setAttitude(osg::Quat(myTireAngleRB-=0.5*throttle,osg::Vec3(0,0,1)));
 }
 
-Quad::Quad() :
+Quad::Quad(std::string modelFile) :
     model(), myPropF(), myPropB(),myPropL(), myPropR(),
 	myPropAngleF(), myPropAngleB(), myPropAngleL(), myPropAngleR()
 {
-	std::string modelFile( std::string(DATADIR) + "/models/arducopter.ac");
-	std::cout << "model file: " << modelFile << std::endl;
     model = osgDB::readNodeFile(modelFile);
 	if (!model)
 	{
