@@ -67,13 +67,13 @@ def install_build(cmakecall, exitVal=True):
     if not os.path.isdir(build_dir): 
         os.mkdir(build_dir)
     os.chdir(build_dir)
-    subprocess.check_call(cmakecall, exitVal)
+    subprocess.check_call(cmakecall)
     subprocess.check_call(["make", makeargs])
     if exitVal == True:
         raise SystemExit
 	
 def dev_build():
-	cmakecall.insert(1, "-D IN_SRC_BUILD::bool=TRUE")
+	cmakecall.insert(1, "-DDEV_MODE::bool=TRUE")
 	install_build(cmakecall)
 
 def grab_deps():
@@ -130,8 +130,8 @@ def clean():
 # set(CMAKE_CXX_FLAGS_PROFILE "-g -pg")
 # set(CMAKE_C_FLAGS_PROFILE "-g -pg")
 def profile():
-	cmakecall.insert(1, "-D IN_SRC_BUILD::bool=TRUE")
-	cmakecall.insert(2, "-D BUILD_TYPE=PROFILE")
+	cmakecall.insert(1, "-DDEV_MODE::bool=TRUE")
+	cmakecall.insert(2, "-DBUILD_TYPE=PROFILE")
 	install_build(cmakecall)
 	
 def menu():
@@ -151,7 +151,7 @@ try:
     loop_num = 0
     # continues until a function raises system exit or ^C
     while (1): 	
-        if len(args) == 1:
+        if len(args) == 1 and loop_num == 0:
             opt = args[0]
             loop_num += 1
         else:
