@@ -32,6 +32,8 @@
 #include <stdexcept>
 #include "config.h"
 
+extern osg::Node *makeTerrain( void );
+
 namespace mavsim
 {
 
@@ -460,6 +462,7 @@ Plane::Plane(std::string modelFile) :
     myRudder.reset(new Actuator("rudder",osg::Vec3(-5.638,0.234,0.000),model));
     myPropeller.reset(new Actuator("propeller",osg::Vec3(3.874,-0.353,0.003),model));
     addChild(modelPat);
+    addChild(makeTerrain());
 }
 
 void Plane::setEuler(double roll, double pitch, double yaw)
@@ -552,6 +555,7 @@ Quad::Quad(std::string modelFile) :
     myPropL.reset(new Actuator("propellerL",osg::Vec3(0,0.046,-0.288),modelPat));
     myPropR.reset(new Actuator("propellerR",osg::Vec3(0,0.046,0.288),modelPat));
     addChild(modelPat);
+    addChild(makeTerrain());
 }
 
 void Quad::setEuler(double roll, double pitch, double yaw)

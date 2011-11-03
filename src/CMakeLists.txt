@@ -12,11 +12,15 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY
 set(${PROJECT_NAME}Source
 	osgUtils.cpp
 	Viewer.cpp
+	terrain.cpp
 	)
 
 set(${PROJECT_NAME}Headers
 	osgUtils.hpp
 	Viewer.hpp
+	terrain_coords.h
+	terrain_normals.h
+	terrain_texcoords.h
 	)
 
 if(QT_FOUND)
