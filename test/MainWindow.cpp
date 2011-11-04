@@ -24,14 +24,15 @@
 #include <cstdlib>
 #include <fstream>
 
-MainWindow::MainWindow() : sceneRoot(new osg::Group)
+MainWindow::MainWindow() : sceneRoot(new osg::Group), simThread(this)
 {
     setupUi(this);
     viewer->setSceneData(sceneRoot);
     viewer->setCameraManipulator(new osgGA::TrackballManipulator);
-    viewer->getCameraManipulator()->setHomePosition(osg::Vec3d(30,30,-30),osg::Vec3d(0,0,0),osg::Vec3d(0,0,-1),false);
+    viewer->getCameraManipulator()->setHomePosition(osg::Vec3d(50,50,-50),osg::Vec3d(0,0,0),osg::Vec3d(0,0,-1),false);
     viewer->getCameraManipulator()->home(0);
-    sceneRoot->addChild(new mavsim::visualization::Frame(20,"N","E","D"));
+    sceneRoot->addChild(new arkosg::Frame(20,"N","E","D"));
+    sceneRoot->addChild(new arkosg::Terrain(osg::Vec3d(1000,1000,1)));
 
 	// read initial settings
 	QCoreApplication::setOrganizationName("arkTools");
@@ -41,18 +42,22 @@ MainWindow::MainWindow() : sceneRoot(new osg::Group)
 	// load plane
     try
     {
-        plane = new mavsim::visualization::Plane(DATADIR+std::string("/models/plane.ac"));
-        plane->addChild(new mavsim::visualization::Frame(15,"X","Y","Z"));
+        plane = new arkosg::Plane(DATADIR+std::string("/models/plane.ac"));
+		plane->setPosition(osg::Vec3(0,0,-10));
+        plane->addChild(new arkosg::Frame(15,"X","Y","Z"));
         sceneRoot->addChild(plane);
     }
     catch(const std::exception & e)
     {
 		showMsg(e.what());		
     }
+	clock.start();
+	simThread.start();
 }
 
 MainWindow::~MainWindow()
 {
+	simThread.quit();
     delete viewer;
 }
 
@@ -62,5 +67,37 @@ void MainWindow::showMsg(const QString & str)
 	msgBox.setText(str);
 	msgBox.exec();
 };
+
+void MainWindow::simulate() {
+	viewer->mutex.lock();
+	float t= clock.elapsed()/1000.0;
+	float period = 10; // seconds
+	float phi = 0.5*sin(2*M_PI/period*t);
+	float theta = 0.5*sin(2*M_PI/period*t);
+	float psi = 0.5*sin(2*M_PI/period*t);
+	float throttle = 0.5*sin(2*M_PI/period*t);	
+	float aileron = 0.5*sin(2*M_PI/period*t);
+   	float elevator = 0.5*sin(2*M_PI/period*t);
+   	float rudder = 0.5*sin(2*M_PI/period*t);
+	float pN = 10*sin(2*M_PI/period*t);
+	float pE = 10*cos(2*M_PI/period*t);
+	float pD = -(10+10*sin(2*M_PI/period*t));
+	plane->setPosition(osg::Vec3(pN,pE,pD));
+	plane->setEuler(phi,theta,psi);
+	plane->setU(throttle,aileron,elevator,rudder);
+	viewer->mutex.unlock();
+}
+
+SimulateThread::SimulateThread(MainWindow * window) : window(window), timer(this)
+{
+	connect(&timer, SIGNAL(timeout()), window, SLOT(simulate()));
+}
+
+void SimulateThread::run()
+{
+	std::cout << "simulation started" << std::endl;
+	timer.start(1000/60);
+	exec();
+}
 
 // vim:ts=4:sw=4

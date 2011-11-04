@@ -26,20 +26,41 @@
 #include <QSettings>
 #include "config.h"
 #include <stdexcept>
+#include <QThread>
+#include <QTime>
 
 class MainWindow;
+
+class SimulateThread : public QThread
+{
+	Q_OBJECT
+public:
+	SimulateThread(MainWindow * window);
+	void run();
+	MainWindow * window;
+	QTimer timer;
+	void quit()
+	{
+		timer.stop();
+		QThread::quit();
+	}
+};
 
 class MainWindow : public QMainWindow, private Ui::MainWindow
 {
     Q_OBJECT
+	friend class SimulateThread;
 public:
     MainWindow();
     virtual ~MainWindow();
 
 private slots:
 	void showMsg(const QString & str);
+	void simulate();	
 
 private:
+	QTime clock;
+	SimulateThread simThread;
     void loadModel(const std::string & name);
     template <class varType>
     void prompt(const std::string & str, varType & var)
@@ -52,7 +73,7 @@ private:
         }
         else std::cin.get();
     }
-    mavsim::visualization::Plane * plane;
+    arkosg::Plane * plane;
 	osg::Group * sceneRoot;
 };
 

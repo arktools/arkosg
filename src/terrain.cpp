@@ -81,7 +81,7 @@ void getDatabaseCenterRadius( float dbcenter[3], float *dbradius )
 }
 
 
-Group *makeTerrain( void )
+Group *makeTerrain(const Vec3 & scale)
 {
     int m, n;
     int  i, j;
@@ -145,7 +145,7 @@ Group *makeTerrain( void )
     geode->addDrawable( geom );
 
 	PositionAttitudeTransform * pat = new PositionAttitudeTransform;
-	pat->setScale(Vec3(1000.0,1000.0,0.0));
+	pat->setScale(scale);
 	pat->addChild(geode);
 
     return pat;

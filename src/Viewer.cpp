@@ -20,10 +20,7 @@
 #include <boost/bind.hpp>
 #include <osgGA/TrackballManipulator>
 
-namespace mavsim
-{
-
-namespace visualization
+namespace arkosg
 {
 
 Viewer::Viewer(int fps) :
@@ -68,9 +65,6 @@ void Viewer::unlock()
     myMutex.unlock();
 }
 
-} // visualization
-
-} // mavsim
-
+} // arkosg
 
 // vim:ts=4:sw=4

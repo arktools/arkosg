@@ -16,8 +16,8 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef mavsim_osgUtils_HPP
-#define mavsim_osgUtils_HPP
+#ifndef osgUtils_HPP
+#define osgUtils_HPP
 
 #include <osg/NodeVisitor>
 #include <osg/PositionAttitudeTransform>
@@ -26,10 +26,7 @@
 
 #include <float.h>
 
-namespace mavsim
-{
-
-namespace visualization
+namespace arkosg
 {
 
 static const osg::Vec4d white(1,1,1,1), red(1,0,0,1), green(0,1,0,1), blue(0,0,1,1), pink(1,0,1,1);
@@ -212,12 +209,13 @@ private:
     boost::scoped_ptr<Actuator> myPropR;
 };
 
+class Terrain : public osg::PositionAttitudeTransform
+{
+public:
+	Terrain(const osg::Vec3 & scale);
+};
 
-
-
-} // visualization
-
-} // mavsim
+} // arkosg
 
 #endif
 

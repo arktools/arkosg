@@ -32,12 +32,9 @@
 #include <stdexcept>
 #include "config.h"
 
-extern osg::Node *makeTerrain( void );
+extern osg::Node *makeTerrain(const osg::Vec3 & scale);
 
-namespace mavsim
-{
-
-namespace visualization
+namespace arkosg
 {
 
 std::vector<osg::Node*> findNamedNodes(const std::string& searchName,
@@ -462,7 +459,6 @@ Plane::Plane(std::string modelFile) :
     myRudder.reset(new Actuator("rudder",osg::Vec3(-5.638,0.234,0.000),model));
     myPropeller.reset(new Actuator("propeller",osg::Vec3(3.874,-0.353,0.003),model));
     addChild(modelPat);
-    addChild(makeTerrain());
 }
 
 void Plane::setEuler(double roll, double pitch, double yaw)
@@ -555,7 +551,6 @@ Quad::Quad(std::string modelFile) :
     myPropL.reset(new Actuator("propellerL",osg::Vec3(0,0.046,-0.288),modelPat));
     myPropR.reset(new Actuator("propellerR",osg::Vec3(0,0.046,0.288),modelPat));
     addChild(modelPat);
-    addChild(makeTerrain());
 }
 
 void Quad::setEuler(double roll, double pitch, double yaw)
@@ -579,11 +574,10 @@ void Quad::setU(double throttleF, double throttleB, double throttleL, double thr
 	myPropR->setAttitude(osg::Quat(myPropAngleR-=0.5*throttleR,osg::Vec3(0,1,0)));
 }
 
+Terrain::Terrain(const osg::Vec3 & scale) {
+	addChild(makeTerrain(scale));
+}
 
-
-} // visualization
-
-} // mavsim
-
+} // arkosg
 
 // vim:ts=4:sw=4

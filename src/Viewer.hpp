@@ -16,18 +16,15 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef mavsim_Viewer_HPP
-#define mavsim_Viewer_HPP
+#ifndef Viewer_HPP
+#define Viewer_HPP
 
 #include <osgViewer/Viewer>
 #include <boost/thread.hpp>
 #include <boost/thread/mutex.hpp>
 #include <boost/scoped_ptr.hpp>
 
-namespace mavsim
-{
-
-namespace visualization
+namespace arkosg
 {
 
 /**
@@ -63,9 +60,7 @@ private:
     int myFps; // Approxmiate frames per second, neglects framing time
 };
 
-} // visualization
-
-} // mavsim
+} // arkosg
 
 #endif
 
