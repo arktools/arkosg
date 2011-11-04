@@ -32,7 +32,7 @@
 #include <stdexcept>
 #include "config.h"
 
-extern osg::Node *makeTerrain(const osg::Vec3 & scale);
+extern osg::Node *makeTerrain(const std::string & texture, const osg::Vec3 & scale);
 
 namespace arkosg
 {
@@ -574,8 +574,8 @@ void Quad::setU(double throttleF, double throttleB, double throttleL, double thr
 	myPropR->setAttitude(osg::Quat(myPropAngleR-=0.5*throttleR,osg::Vec3(0,1,0)));
 }
 
-Terrain::Terrain(const osg::Vec3 & scale) {
-	addChild(makeTerrain(scale));
+Terrain::Terrain(const std::string & textureFile, const osg::Vec3 & scale) {
+	addChild(makeTerrain(textureFile,scale));
 }
 
 } // arkosg

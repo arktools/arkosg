@@ -212,7 +212,7 @@ private:
 class Terrain : public osg::PositionAttitudeTransform
 {
 public:
-	Terrain(const osg::Vec3 & scale);
+	Terrain(const std::string & textureFile, const osg::Vec3 & scale);
 };
 
 } // arkosg
