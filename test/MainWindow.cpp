@@ -23,6 +23,7 @@
 
 #include <cstdlib>
 #include <fstream>
+#include "config.h"
 
 MainWindow::MainWindow() : sceneRoot(new osg::Group), simThread(this)
 {
@@ -32,7 +33,7 @@ MainWindow::MainWindow() : sceneRoot(new osg::Group), simThread(this)
     viewer->getCameraManipulator()->setHomePosition(osg::Vec3d(50,50,-50),osg::Vec3d(0,0,0),osg::Vec3d(0,0,-1),false);
     viewer->getCameraManipulator()->home(0);
     sceneRoot->addChild(new arkosg::Frame(20,"N","E","D"));
-    sceneRoot->addChild(new arkosg::Terrain(osg::Vec3d(1000,1000,1)));
+    sceneRoot->addChild(new arkosg::Terrain(std::string(DATADIR)+"/images/lz.rgb",osg::Vec3d(100,100,100)));
 
 	// read initial settings
 	QCoreApplication::setOrganizationName("arkTools");

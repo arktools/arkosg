@@ -81,7 +81,7 @@ void getDatabaseCenterRadius( float dbcenter[3], float *dbradius )
 }
 
 
-Group *makeTerrain(const Vec3 & scale)
+Group *makeTerrain(const std::string & textureFile, const Vec3 & scale)
 {
     int m, n;
     int  i, j;
@@ -132,7 +132,7 @@ Group *makeTerrain(const Vec3 & scale)
 
     Texture2D *tex = new Texture2D;
 
-    tex->setImage(osgDB::readImageFile(DATADIR"/images/lz.rgb"));
+    tex->setImage(osgDB::readImageFile(textureFile));
 
     StateSet *dstate = new StateSet;
     dstate->setMode( GL_LIGHTING, StateAttribute::OFF );
