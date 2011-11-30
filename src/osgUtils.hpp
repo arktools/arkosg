@@ -209,6 +209,20 @@ private:
     boost::scoped_ptr<Actuator> myPropR;
 };
 
+class Sailboat : public osg::PositionAttitudeTransform
+{
+public:
+    Sailboat(std::string modelFile);
+    void setEuler(double roll, double pitch, double yaw);
+    void setPositionScalars(double x, double y, double z);
+    void setU(double sail, double rudder);
+private:
+    osg::ref_ptr<osg::Node> model;
+	osg::ref_ptr<osg::PositionAttitudeTransform> modelPat;
+    boost::scoped_ptr<Actuator> mySail;
+    boost::scoped_ptr<Actuator> myRudder;
+};
+
 class Terrain : public osg::PositionAttitudeTransform
 {
 public:

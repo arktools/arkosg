@@ -574,6 +574,42 @@ void Quad::setU(double throttleF, double throttleB, double throttleL, double thr
 	myPropR->setAttitude(osg::Quat(myPropAngleR-=0.5*throttleR,osg::Vec3(0,1,0)));
 }
 
+Sailboat::Sailboat(std::string modelFile) :
+    model(), mySail(), myRudder()
+{
+    model = osgDB::readNodeFile(modelFile);
+	if (!model)
+	{
+		throw(std::runtime_error("can't find model: " + modelFile));
+		return;
+	}
+	modelPat = new PositionAttitudeTransform;
+	modelPat->setAttitude(osg::Quat(-M_PI/2,osg::Vec3(1,0,0)));
+	modelPat->addChild(model);
+    mySail.reset(new Actuator("sail",osg::Vec3(0,-.175,.125),modelPat));
+    myRudder.reset(new Actuator("rudder",osg::Vec3(0,.46,.046),modelPat));
+    addChild(modelPat);
+}
+
+void Sailboat::setEuler(double roll, double pitch, double yaw)
+{
+    setAttitude(osg::Quat(
+                    roll,osg::Vec3(1,0,0),
+                    pitch,osg::Vec3(0,1,0),
+                    yaw,osg::Vec3(0,0,1)));
+}
+
+void Sailboat::setPositionScalars(double x, double y, double z)
+{
+    setPosition(osg::Vec3(x,y,z));
+}
+
+void Sailboat::setU(double sail, double rudder)
+{
+	mySail->setAttitude(osg::Quat(sail,osg::Vec3(0,0,1)));
+	myRudder->setAttitude(osg::Quat(rudder,osg::Vec3(0,0,1)));
+}
+
 Terrain::Terrain(const std::string & textureFile, const osg::Vec3 & scale) {
 	addChild(makeTerrain(textureFile,scale));
 }
