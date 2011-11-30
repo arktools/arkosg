@@ -586,8 +586,8 @@ Sailboat::Sailboat(std::string modelFile) :
 	modelPat = new PositionAttitudeTransform;
 	modelPat->setAttitude(osg::Quat(-M_PI/2,osg::Vec3(1,0,0)));
 	modelPat->addChild(model);
-    mySail.reset(new Actuator("Sail",osg::Vec3(0,.125,-.175),modelPat));
-    myRudder.reset(new Actuator("Rudder",osg::Vec3(0,.046,0.46),modelPat));
+    mySail.reset(new Actuator("Sail",osg::Vec3(0,.125,0.175),modelPat));
+    myRudder.reset(new Actuator("Rudder",osg::Vec3(0,.046,-0.46),modelPat));
     addChild(modelPat);
 }
 
