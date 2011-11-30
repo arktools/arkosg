@@ -586,8 +586,8 @@ Sailboat::Sailboat(std::string modelFile) :
 	modelPat = new PositionAttitudeTransform;
 	modelPat->setAttitude(osg::Quat(-M_PI/2,osg::Vec3(1,0,0)));
 	modelPat->addChild(model);
-    mySail.reset(new Actuator("Sail",osg::Vec3(0,-.175,.125),modelPat));
-    myRudder.reset(new Actuator("Rudder",osg::Vec3(0,.46,.046),modelPat));
+    mySail.reset(new Actuator("Sail",osg::Vec3(0,.125,-.175),modelPat));
+    myRudder.reset(new Actuator("Rudder",osg::Vec3(0,.046,0.46),modelPat));
     addChild(modelPat);
 }
 
@@ -606,8 +606,8 @@ void Sailboat::setPositionScalars(double x, double y, double z)
 
 void Sailboat::setU(double sail, double rudder)
 {
-	mySail->setAttitude(osg::Quat(sail,osg::Vec3(0,0,1)));
-	myRudder->setAttitude(osg::Quat(rudder,osg::Vec3(0,0,1)));
+	mySail->setAttitude(osg::Quat(sail,osg::Vec3(0,1,0)));
+	myRudder->setAttitude(osg::Quat(rudder,osg::Vec3(0,1,0)));
 }
 
 Terrain::Terrain(const std::string & textureFile, const osg::Vec3 & scale) {
