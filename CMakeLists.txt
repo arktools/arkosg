@@ -28,9 +28,6 @@ set(CMAKE_MODULE_PATH
 	${CMAKE_SOURCE_DIR}/cmake/arkcmake
 )
 
-# make shared library building optional
-option(BUILD_SHARED_LIBS false)
-
 # add definitions
 include(DefineCMakeDefaults)
 include(DefinePlatformDefaults)
@@ -84,6 +81,15 @@ include(ExternalProject)
 # settings
 option(DEV_MODE "Setup paths for developer testing." OFF)
 option(BUILD_SHARED_LIBS "Build shared libraries instead of static." OFF)
+if (NOT BUILD_SHARED_LIBS)
+    set(BOOST_USE_STATIC_LIBS ON)
+    add_definitions(-DOSG_LIBRARY_STATIC)
+    if(WIN32)
+        set(CMAKE_FIND_LIBRARY_SUFFIXES .lib .a ${CMAKE_FIND_LIBRARY_SUFFIXES})
+    else()
+        set(CMAKE_FIND_LIBRARY_SUFFIXES .a ${CMAKE_FIND_LIBRARY_SUFFIXES})
+    endif()
+endif()
 
 # built variables
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
@@ -104,17 +110,18 @@ enable_language(CXX)
 add_custom_target(dist COMMAND ${CMAKE_MAKE_PROGRAM} package_source)
 
 # find libraries with cmake modules
+
 find_package(Qt4)
-find_package(Boost 1.40.0 REQUIRED COMPONENTS thread-mt system-mt)
+if(WIN32)
+    find_package(Boost 1.40.0 REQUIRED COMPONENTS thread_win32-mt system-mt)
+else()
+    find_package(Boost 1.40.0 REQUIRED COMPONENTS thread-mt system-mt)
+endif()
+
 set(QT_USE_QTOPENGL TRUE)
 set(QT_USE_QTUITOOLS TRUE)
 find_package(OpenGL)
-find_package(OpenSceneGraph 2.8.0 COMPONENTS osgGA osgDB osgUtil osgViewer)
-if ("OSG_LIBRARY-NOTFOUND" STREQUAL "${OSG_LIBRARY}")
-    set(OPENSCENEGRAPH_FOUND FALSE)
-else()
-    set(OPENSCENEGRAPH_FOUND TRUE)
-endif()
+find_package(OpenSceneGraph 2.8.0 COMPONENTS osg osgGA osgDB osgManipulator osgUtil osgViewer)
 
 # data directory
 if(DEV_MODE)

@@ -51,7 +51,7 @@ void Viewer::loop()
         lock();
         frame();
         unlock();
-        usleep(1e6/myFps);
+        boost::this_thread::sleep(boost::posix_time::milliseconds(1000/myFps));
     }
 }
 
