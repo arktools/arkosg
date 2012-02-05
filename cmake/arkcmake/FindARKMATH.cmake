@@ -42,8 +42,7 @@ set(ARKMATH_PROCESS_INCLUDES ARKMATH_INCLUDE_DIR)
 set(ARKMATH_PROCESS_LIBS ARKMATH_LIBRARY ARKMATH_LIBRARIES)
 libfind_process(ARKMATH)
 
-macro(add_external_project_arkmath TAG EP_BASE_DIR EP_INSTALL_PREFIX)
-    find_package(ARKMATH ${TAG})
+macro(build_arkmath TAG EP_BASE_DIR EP_INSTALL_PREFIX EP_DATADIR)
     if(NOT ARKMATH_FOUND)
         ExternalProject_Add(arkmath
             GIT_REPOSITORY "git://github.com/arktools/arkmath.git"
@@ -54,6 +53,7 @@ macro(add_external_project_arkmath TAG EP_BASE_DIR EP_INSTALL_PREFIX)
             INSTALL_COMMAND make DESTDIR=${EP_BASE_DIR} install
            )
         set(ARKMATH_INCLUDE_DIRS ${EP_BASE_DIR}/${EP_INSTALL_PREFIX}/include)
+        set(ARKMATH_DATA_DIR ${EP_DATADIR}/arkmath/data)
         # static lib prefix
         if(WIN32)
             set(STATIC_LIB_PREFIX "")
