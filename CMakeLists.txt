@@ -81,6 +81,7 @@ include(ExternalProject)
 # settings
 option(DEV_MODE "Setup paths for developer testing." OFF)
 option(BUILD_SHARED_LIBS "Build shared libraries instead of static." OFF)
+option(BUILD_TEST "Build a test application with QT" OFF)
 if (NOT BUILD_SHARED_LIBS)
     set(BOOST_USE_STATIC_LIBS ON)
     add_definitions(-DOSG_LIBRARY_STATIC)
@@ -152,6 +153,6 @@ include_directories( ${PROJECT_SOURCE_DIR}/src ${PROJECT_BINARY_DIR}/src)
 # subdirectories
 add_subdirectory(src)
 
-if (BUILD_TESTING)
+if (BUILD_TEST)
 	add_subdirectory(test)
 endif ()
