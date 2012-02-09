@@ -30,13 +30,24 @@ if(QT_FOUND)
 endif(QT_FOUND)
 
 add_library(${PROJECT_NAME} ${${PROJECT_NAME}Source})
-target_link_libraries(${PROJECT_NAME} 
+
+set(${PROJECT_NAME}LinkLibs
     ${OPENSCENEGRAPH_LIBRARIES} 
 	${Boost_LIBRARIES}
     ${QT_LIBRARIES}
     ${OPENGL_LIBRARIES}
-    lcms
-    lzma)
+    )
+
+if (WIN32)
+    if (NOT BUILD_SHARED_LIBS)
+        list(APPEND ${PROJECT_NAME}LinkLibs
+            lcms
+            lzma
+        )
+    endif()
+endif()
+
+target_link_libraries(${PROJECT_NAME} ${${PROJECT_NAME}LinkLibs})
 
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${LIBRARY_VERSION}
 	SOVERSION ${LIBRARY_SOVERSION})

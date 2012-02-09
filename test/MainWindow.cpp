@@ -51,6 +51,7 @@ MainWindow::MainWindow() : sceneRoot(new osg::Group), simThread(this)
     catch(const std::exception & e)
     {
 		showMsg(e.what());		
+        return;
     }
 	clock.start();
 	simThread.start();
