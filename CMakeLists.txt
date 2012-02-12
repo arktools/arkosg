@@ -10,7 +10,7 @@ set(PROJECT_CONTACT_VENDOR arkTools)
 
 set(APPLICATION_VERSION_MAJOR "0")
 set(APPLICATION_VERSION_MINOR "2")
-set(APPLICATION_VERSION_PATCH "0")
+set(APPLICATION_VERSION_PATCH "1")
 
 set(APPLICATION_VERSION "${APPLICATION_VERSION_MAJOR}.${APPLICATION_VERSION_MINOR}.${APPLICATION_VERSION_PATCH}")
 set(LIBRARY_VERSION ${APPLICATION_VERSION})
@@ -102,6 +102,13 @@ option(BUILD_TEST "Build a test application with QT" OFF)
 option(BUILD_SHARED_LIBS "Build a test application with QT" OFF)
 
 if (NOT BUILD_SHARED_LIBS)
+    set(CMAKE_EXE_LINKER_FLAGS -static)
+    set(CMAKE_EXE_LINK_DYNAMIC_C_FLAGS)       # remove -Wl,-Bdynamic
+    set(CMAKE_EXE_LINK_DYNAMIC_CXX_FLAGS)
+    set(CMAKE_SHARED_LIBRARY_C_FLAGS)         # remove -fPIC
+    set(CMAKE_SHARED_LIBRARY_CXX_FLAGS)
+    set(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS)    # remove -rdynamic
+    set(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS)
     set(BOOST_USE_STATIC_LIBS ON)
     if (WIN32)
         # static linking of osg libs
@@ -144,9 +151,11 @@ else()
 endif()
 
 set(QT_USE_QTOPENGL TRUE)
-set(QT_USE_QTUITOOLS TRUE)
+include( ${QT_USE_FILE})
+add_definitions(-DUSE_QT4)
+
 find_package(OpenGL)
-find_package(OpenSceneGraph 2.8.0 COMPONENTS osg osgGA osgDB osgManipulator osgUtil osgViewer)
+find_package(OpenSceneGraph 2.8.0 COMPONENTS osgViewer osgUtil osgDB osgGA osgManipulator)
 
 # data directory
 if(DEV_MODE)
