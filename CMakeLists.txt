@@ -41,7 +41,6 @@ if(WIN32)
     add_definitions(-D_WIN32_WINNT=0x0501) # target xp
 	set(CPACK_GENERATOR "NSIS")
 	set(CPACK_SOURCE_GENERATOR "ZIP")
-    set(CMAKE_INSTALL_PREFIX "/usr/local")
     # There is a bug in NSI that does not handle full unix paths properly. Make
     # sure there is at least one set of four (4) backlasshes.
     #set(CPACK_PACKAGE_ICON "${CMake_SOURCE_DIR}/Utilities/Release\\\\InstallIcon.bmp")
