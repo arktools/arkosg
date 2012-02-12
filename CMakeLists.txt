@@ -101,15 +101,11 @@ option(BUILD_TEST "Build a test application with QT" OFF)
 option(BUILD_SHARED_LIBS "Build a test application with QT" OFF)
 
 if (NOT BUILD_SHARED_LIBS)
-    set(CMAKE_EXE_LINKER_FLAGS -Wl,-Bstatic)
-    set(CMAKE_EXE_LINK_DYNAMIC_C_FLAGS)       # remove -Wl,-Bdynamic
-    set(CMAKE_EXE_LINK_DYNAMIC_CXX_FLAGS)
-    set(CMAKE_SHARED_LIBRARY_C_FLAGS)         # remove -fPIC
-    set(CMAKE_SHARED_LIBRARY_CXX_FLAGS)
-    set(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS)    # remove -rdynamic
-    set(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS)
     set(BOOST_USE_STATIC_LIBS ON)
-    add_definitions(-DOSG_LIBRARY_STATIC)
+    if (WIN32)
+        # must have osg 3.0.0, not standard on linux yet
+        add_definitions(-DOSG_LIBRARY_STATIC)
+    endif()
     # prefer static libs
     if(WIN32)
         set(CMAKE_FIND_LIBRARY_SUFFIXES .lib .a ${CMAKE_FIND_LIBRARY_SUFFIXES})
