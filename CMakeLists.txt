@@ -101,7 +101,7 @@ option(BUILD_TEST "Build a test application with QT" OFF)
 option(BUILD_SHARED_LIBS "Build a test application with QT" OFF)
 
 if (NOT BUILD_SHARED_LIBS)
-    set(CMAKE_EXE_LINKER_FLAGS -static)
+    set(CMAKE_EXE_LINKER_FLAGS -Bstatic)
     set(CMAKE_EXE_LINK_DYNAMIC_C_FLAGS)       # remove -Wl,-Bdynamic
     set(CMAKE_EXE_LINK_DYNAMIC_CXX_FLAGS)
     set(CMAKE_SHARED_LIBRARY_C_FLAGS)         # remove -fPIC
@@ -142,7 +142,8 @@ add_custom_target(dist COMMAND ${CMAKE_MAKE_PROGRAM} package_source)
 
 # find libraries with cmake modules
 
-find_package(Qt4)
+find_package(Qt4 REQUIRED)
+find_packagE(OpenGL REQUIRED)
 if(WIN32)
     find_package(Boost 1.40.0 REQUIRED COMPONENTS thread_win32-mt system-mt)
 else()
@@ -153,8 +154,7 @@ set(QT_USE_QTOPENGL TRUE)
 include( ${QT_USE_FILE})
 add_definitions(-DUSE_QT4)
 
-find_package(OpenGL)
-find_package(OpenSceneGraph 2.8.0 COMPONENTS osgViewer osgUtil osgDB osgGA osgManipulator)
+find_package(OpenSceneGraph 2.8.0 REQUIRED COMPONENTS osgViewer osgUtil osgDB osgGA osgManipulator)
 
 # data directory
 if(DEV_MODE)

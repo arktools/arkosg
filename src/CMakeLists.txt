@@ -38,6 +38,7 @@ add_library(${PROJECT_NAME} ${${PROJECT_NAME}Source})
 
 set(${PROJECT_NAME}LinkLibs
     ${OPENSCENEGRAPH_LIBRARIES} 
+    ${OPENGL_LIBRARIES}
     ${QT_LIBRARIES}
     )
 
@@ -50,7 +51,9 @@ if (WIN32)
     endif()
 endif()
 
-target_link_libraries(${PROJECT_NAME} ${${PROJECT_NAME}LinkLibs})
+target_link_libraries(${PROJECT_NAME}
+    ${${PROJECT_NAME}LinkLibs}
+    )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
     VERSION ${LIBRARY_VERSION}
