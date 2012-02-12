@@ -101,7 +101,7 @@ option(BUILD_TEST "Build a test application with QT" OFF)
 option(BUILD_SHARED_LIBS "Build a test application with QT" OFF)
 
 if (NOT BUILD_SHARED_LIBS)
-    set(CMAKE_EXE_LINKER_FLAGS -Bstatic)
+    set(CMAKE_EXE_LINKER_FLAGS -Wl,-Bstatic)
     set(CMAKE_EXE_LINK_DYNAMIC_C_FLAGS)       # remove -Wl,-Bdynamic
     set(CMAKE_EXE_LINK_DYNAMIC_CXX_FLAGS)
     set(CMAKE_SHARED_LIBRARY_C_FLAGS)         # remove -fPIC
