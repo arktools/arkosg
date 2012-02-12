@@ -109,11 +109,7 @@ if (NOT BUILD_SHARED_LIBS)
     set(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS)    # remove -rdynamic
     set(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS)
     set(BOOST_USE_STATIC_LIBS ON)
-    if (WIN32)
-        # static linking of osg libs
-        # only supported in osg 3.0, not in most linux distros yet 
-        add_definitions(-DOSG_LIBRARY_STATIC)
-    endif()
+    add_definitions(-DOSG_LIBRARY_STATIC)
     # prefer static libs
     if(WIN32)
         set(CMAKE_FIND_LIBRARY_SUFFIXES .lib .a ${CMAKE_FIND_LIBRARY_SUFFIXES})
