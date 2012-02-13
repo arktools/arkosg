@@ -1,40 +1,23 @@
 project (arkosg)
 
-# Requried cmake version
+# settings
 cmake_minimum_required (VERSION 2.6)
-
-# global needed variables
-set(APPLICATION_NAME ${PROJECT_NAME})
-set(PROJECT_CONTACT_EMAIL james.goppert@gmail.com)
-set(PROJECT_CONTACT_VENDOR arkTools)
-
 set(APPLICATION_VERSION_MAJOR "0")
 set(APPLICATION_VERSION_MINOR "2")
 set(APPLICATION_VERSION_PATCH "1")
-
-set(APPLICATION_VERSION "${APPLICATION_VERSION_MAJOR}.${APPLICATION_VERSION_MINOR}.${APPLICATION_VERSION_PATCH}")
-set(LIBRARY_VERSION ${APPLICATION_VERSION})
-
-# SOVERSION scheme: CURRENT.AGE.REVISION
-#   If there was an incompatible interface change:
-#     Increment CURRENT. Set AGE and REVISION to 0
-#   If there was a compatible interface change:
-#     Increment AGE. Set REVISION to 0
-#   If the source code was changed, but there were no interface changes:
-#     Increment REVISION.
 set(LIBRARY_SOVERSION "0.0.0")
+set(PROJECT_CONTACT_EMAIL james.goppert@gmail.com)
+set(PROJECT_CONTACT_VENDOR arkTools)
 
-# where to look first for cmake modules, before ${CMAKE_ROOT}/Modules/ is checked
+# modules
 set(CMAKE_MODULE_PATH
 	${CMAKE_SOURCE_DIR}/cmake
 	${CMAKE_SOURCE_DIR}/cmake/arkcmake
 )
 
-# add definitions
-include(DefineCMakeDefaults)
-include(DefinePlatformDefaults)
-include(DefineCompilerFlags)
-include(DefineInstallationPaths)
+# use common setup
+include(CommonSetup)
+set(LIBRARY_VERSION ${APPLICATION_VERSION})
 
 # cpack
 if(WIN32)
@@ -81,59 +64,23 @@ set(CPACK_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 #set(CPACK_PACKAGE_EXECUTABLES "MyExecutable" "My Executable")
 include(CPack)
 
-# disallow in-source build
-include(MacroEnsureOutOfSourceBuild)
-macro_ensure_out_of_source_build("${PROJECT_NAME} requires an out of source build. 
-Please create a separate build directory and run 'cmake /path/to/${PROJECT_NAME} [options]' there.")
-
-# add macros
-include(MacroAddPlugin)
-include(MacroCopyFile)
-include(MacroSetDefault)
-include(language_support_v2)
-include(MacroAddLinkFlags)
-include (CTest)
-include(ExternalProject)
-
 # settings
-option(DEV_MODE "Setup paths for developer testing." OFF)
 option(BUILD_TEST "Build a test application with QT" OFF)
-option(BUILD_SHARED_LIBS "Build a test application with QT" OFF)
 
+# static libraries
 if (NOT BUILD_SHARED_LIBS)
     set(BOOST_USE_STATIC_LIBS ON)
     if (WIN32)
         # must have osg 3.0.0, not standard on linux yet
         add_definitions(-DOSG_LIBRARY_STATIC)
     endif()
-    # prefer static libs
-    if(WIN32)
-        set(CMAKE_FIND_LIBRARY_SUFFIXES .lib .a ${CMAKE_FIND_LIBRARY_SUFFIXES})
-    else()
-        set(CMAKE_FIND_LIBRARY_SUFFIXES .a ${CMAKE_FIND_LIBRARY_SUFFIXES})
-    endif()
 endif()
-
-# built variables
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
-
-# set build type
-if(NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING
-      "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel."
-      FORCE)
-endif(NOT CMAKE_BUILD_TYPE)
 
 # enable languages
 enable_language(C)
 enable_language(CXX)
 
-# add make dist target
-add_custom_target(dist COMMAND ${CMAKE_MAKE_PROGRAM} package_source)
-
 # find libraries with cmake modules
-
 find_package(Qt4 REQUIRED)
 find_packagE(OpenGL REQUIRED)
 if(WIN32)
@@ -147,19 +94,6 @@ include( ${QT_USE_FILE})
 add_definitions(-DUSE_QT4)
 
 find_package(OpenSceneGraph 2.8.0 REQUIRED COMPONENTS osgViewer osgUtil osgDB osgGA osgManipulator)
-
-# data directory
-if(DEV_MODE)
-	message(STATUS "configuring for developer build")
-	set(DATADIR ${PROJECT_SOURCE_DIR}/data)
-	set(LIBDIR ${CMAKE_BINARY_DIR}/bin)
-	set(BINDIR ${CMAKE_BINARY_DIR}/bin)
-else()
-	message(STATUS "configuring for standard build")
-	set(DATADIR ${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME}/data)
-	set(LIBDIR ${CMAKE_INSTALL_PREFIX}/lib)
-	set(BINDIR ${CMAKE_INSTALL_PREFIX}/bin)
-endif()
 
 # install data files
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/data" DESTINATION share/${PROJECT_NAME} PATTERN "*.git*" EXCLUDE)
