@@ -70,10 +70,7 @@ option(BUILD_TEST "Build a test application with QT" OFF)
 # static libraries
 if (NOT BUILD_SHARED_LIBS)
     set(BOOST_USE_STATIC_LIBS ON)
-    if (WIN32)
-        # must have osg 3.0.0, not standard on linux yet
-        add_definitions(-DOSG_LIBRARY_STATIC)
-    endif()
+    add_definitions(-DOSG_LIBRARY_STATIC)
 endif()
 
 # enable languages
