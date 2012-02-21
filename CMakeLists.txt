@@ -66,6 +66,7 @@ include(CPack)
 
 # settings
 option(BUILD_TEST "Build a test application with QT" OFF)
+option(WITH_OSGEARTH "With osgearth" ON)
 
 # static libraries
 if (NOT BUILD_SHARED_LIBS)
