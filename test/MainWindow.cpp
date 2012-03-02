@@ -33,7 +33,7 @@ MainWindow::MainWindow() : sceneRoot(new osg::Group), simThread(this)
     viewer->getCameraManipulator()->setHomePosition(osg::Vec3d(50,50,-50),osg::Vec3d(0,0,0),osg::Vec3d(0,0,-1),false);
     viewer->getCameraManipulator()->home(0);
     sceneRoot->addChild(new arkosg::Frame(20,"N","E","D"));
-    sceneRoot->addChild(new arkosg::Terrain(std::string(DATADIR)+"/images/lz.rgb",osg::Vec3d(100,100,100)));
+    sceneRoot->addChild(new arkosg::Terrain(std::string(INSTALL_DATA_DIR)+"/images/lz.rgb",osg::Vec3d(100,100,100)));
 
 	// read initial settings
 	QCoreApplication::setOrganizationName("arkTools");
@@ -43,7 +43,7 @@ MainWindow::MainWindow() : sceneRoot(new osg::Group), simThread(this)
 	// load plane
     try
     {
-        plane = new arkosg::Plane(DATADIR+std::string("/models/plane.ac"));
+        plane = new arkosg::Plane(INSTALL_DATA_DIR+std::string("/models/plane.ac"));
 		plane->setPosition(osg::Vec3(0,0,-10));
         plane->addChild(new arkosg::Frame(15,"X","Y","Z"));
         sceneRoot->addChild(plane);

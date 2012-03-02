@@ -81,7 +81,8 @@ void getDatabaseCenterRadius( float dbcenter[3], float *dbradius )
 }
 
 
-Group *makeTerrain(const std::string & textureFile, const Vec3 & scale)
+//Group *makeTerrain(const std::string & textureFile, const Vec3 & scale)
+Node *makeTerrain(const std::string & textureFile, const Vec3 & scale)
 {
     int m, n;
     int  i, j;

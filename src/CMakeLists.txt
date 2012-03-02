@@ -5,6 +5,7 @@ link_directories(
 
 include_directories(
     ${OPENSCENEGRAPH_INCLUDE_DIRS}
+    ${Boost_INCLUDE_DIRS}
 	${QT_INCLUDE_DIRS}
     ${OPENGL_INCLUDE_DIR}
     )
@@ -44,10 +45,14 @@ set(${PROJECT_NAME}LinkLibs
 
 if (WIN32)
     if (NOT BUILD_SHARED_LIBS)
-        list(APPEND ${PROJECT_NAME}LinkLibs
-            lcms
+	    if (MSVC)
+        list(APPEND ${PROJECT_NAME}LinkLibs)
+		else()
+            list(APPEND ${PROJECT_NAME}LinkLibs
+			lcms
             lzma
-        )
+			)		
+        endif()
     endif()
 endif()
 

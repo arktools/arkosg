@@ -21,6 +21,10 @@ set(arkosgTest_src
 	${arkosgTest_res}
 	)
 
+include_directories(
+    ${OPENSCENEGRAPH_INCLUDE_DIRS}
+    ${Boost_INCLUDE_DIRS}
+    )
 add_executable(arkosgTest ${arkosgTest_src})
 add_test(arkosgTest ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/arkosgTest)
 target_link_libraries(arkosgTest arkosg)
