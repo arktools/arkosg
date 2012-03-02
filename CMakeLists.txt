@@ -167,7 +167,7 @@ if(QT_FOUND)
 	list(APPEND ARKOSG_SRCS
 		src/QOSGAdapterWidget.cpp
 	)
-	list(APPEND ARKOSG_HDRS
+	list(APPEND ARKOSG_PUBLIC_HDRS
 		src/QOSGAdapterWidget.hpp
 	)
 endif()
