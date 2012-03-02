@@ -18,7 +18,6 @@ option(WITH_BUILD_DEPS "Build dependencies." OFF)
 option(WITH_PREFER_STATIC "Build preferring static linking." ON)
 option(WITH_BUILD_TESTS "Build a test application with QT" OFF)
 option(WITH_BUILD_SHARED "Build shared library." OFF)
-option(WITH_BUILD_STATIC "Build static library." ON)
 
 # variables
 set(ROOT_THREAD TRUE CACHE INTERNAL "Is this the top level of the recursion?")
@@ -43,6 +42,8 @@ if (WITH_BUILD_DEPS AND ROOT_THREAD)
         "-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}"
         "-DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}"
         "-DWITH_BUILD_DEPS=${WITH_BUILD_DEPS}"
+        "-DWITH_BUILD_TESTS=${WITH_BUILD_TESTS}"
+        "-DWITH_BUILD_SHARED=${WITH_BUILD_SHARED}"
         "-DWITH_PREFER_STATIC=${WITH_PREFER_STATIC}"
         "-DROOT_THREAD=FALSE"
         RESULT_VARIABLE ERROR)
@@ -186,21 +187,19 @@ if(MINGW)
 endif()
 
 # static library
-if (WITH_BUILD_STATIC)
-    add_library(arkosgStatic STATIC ${ARKOSG_SRCS} ${ARKOSG_PUBLIC_HDRS} ${ARKOSG_PRIVATE_HDRS})
-    set(ARKOSG_STATIC_LIBNAME "arkosg")
-    if (MSVC)
-        set(ARKOSG_STATIC_LIBNAME "arkosgStatic")
-    endif()
-    set_target_properties(arkosgStatic PROPERTIES 
-        OUTPUT_NAME ${ARKOSG_STATIC_LIBNAME}
-        VERSION ${LIBRARY_VERSION} 
-        PUBLIC_HEADER "${ARKOSG_PUBLIC_HDRS}"
-        PRIVATE_HEADER "${ARKOSG_PRIVATE_HDRS}"
-        )
-    target_link_libraries(arkosgStatic ${ARKOSG_LINK_LIBRARIES})
-    list(APPEND INSTALLED_TARGETS arkosgStatic)
+add_library(arkosgStatic STATIC ${ARKOSG_SRCS} ${ARKOSG_PUBLIC_HDRS} ${ARKOSG_PRIVATE_HDRS})
+set(ARKOSG_STATIC_LIBNAME "arkosg")
+if (MSVC)
+    set(ARKOSG_STATIC_LIBNAME "arkosgStatic")
 endif()
+set_target_properties(arkosgStatic PROPERTIES 
+    OUTPUT_NAME ${ARKOSG_STATIC_LIBNAME}
+    VERSION ${LIBRARY_VERSION} 
+    PUBLIC_HEADER "${ARKOSG_PUBLIC_HDRS}"
+    PRIVATE_HEADER "${ARKOSG_PRIVATE_HDRS}"
+    )
+target_link_libraries(arkosgStatic ${ARKOSG_LINK_LIBRARIES})
+list(APPEND INSTALLED_TARGETS arkosgStatic)
 
 # shared library
 if (WITH_BUILD_SHARED)
