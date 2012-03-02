@@ -40,7 +40,7 @@ if (WITH_BUILD_DEPS AND ROOT_THREAD)
     execute_process(COMMAND ${CMAKE_COMMAND} "${CMAKE_SOURCE_DIR}"
         "-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}"
         "-DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}"
-        "-DWITH_BUILD_DEPS=${WITH_BUILD_STATIC}"
+        "-DWITH_BUILD_DEPS=${WITH_BUILD_DEPS}"
         "-DWITH_BUILD_STATIC=${WITH_BUILD_STATIC}"
         "-DROOT_THREAD=FALSE"
         RESULT_VARIABLE ERROR)
@@ -78,8 +78,11 @@ endif()
 # find libraries with cmake modules
 find_package(Qt4 REQUIRED)
 find_packagE(OpenGL REQUIRED)
-if(WIN32)
+
+if(MSVC)
     find_package(Boost 1.40.0 REQUIRED COMPONENTS thread system)
+elseif(MINGW)
+    find_package(Boost 1.40.0 REQUIRED COMPONENTS thread_win32-mt system-mt)
 else()
     find_package(Boost 1.40.0 REQUIRED COMPONENTS thread-mt system-mt)
 endif()
@@ -116,6 +119,7 @@ configure_file(config.h.in config.h)
 set(QT_USE_QTOPENGL TRUE)
 if (WITH_BUILD_STATIC)
     add_definitions(-DOSG_LIBRARY_STATIC)
+    add_definitions(-DBOOST_THREAD_USE_LIB)
 endif()
 find_package(OpenSceneGraph 2.8.0 REQUIRED COMPONENTS osgViewer osgUtil osgDB osgGA osgManipulator)
 if (MSVC)
@@ -167,6 +171,7 @@ endif()
 
 # link libraries
 set(ARKOSG_LINK_LIBRARIES
+    ${Boost_LIBRARIES}
     ${OPENSCENEGRAPH_LIBRARIES} 
     ${OPENGL_LIBRARIES}
     ${QT_LIBRARIES}
@@ -203,7 +208,7 @@ set_target_properties(arkosgShared PROPERTIES
     PUBLIC_HEADER "${ARKOSG_PUBLIC_HDRS}"
     PRIVATE_HEADER "${ARKOSG_PRIVATE_HDRS}"
     )
-target_link_libraries(arkosgShared ${arkosg_LINK_LIBRARIES})
+target_link_libraries(arkosgShared ${ARKOSG_LINK_LIBRARIES})
 list(APPEND INSTALLED_TARGETS arkosgShared)
 
 
