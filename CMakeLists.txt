@@ -15,8 +15,10 @@ set(LIBRARY_SOVERSION "0.0.0")
 
 # options
 option(WITH_BUILD_DEPS "Build dependencies." OFF)
-option(WITH_BUILD_STATIC "Build preferring static linking." ON)
-option(WITH_TESTS "Build a test application with QT" OFF)
+option(WITH_PREFER_STATIC "Build preferring static linking." ON)
+option(WITH_BUILD_TESTS "Build a test application with QT" OFF)
+option(WITH_BUILD_SHARED "Build shared library." OFF)
+option(WITH_BUILD_STATIC "Build static library." ON)
 
 # variables
 set(ROOT_THREAD TRUE CACHE INTERNAL "Is this the top level of the recursion?")
@@ -41,7 +43,7 @@ if (WITH_BUILD_DEPS AND ROOT_THREAD)
         "-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}"
         "-DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}"
         "-DWITH_BUILD_DEPS=${WITH_BUILD_DEPS}"
-        "-DWITH_BUILD_STATIC=${WITH_BUILD_STATIC}"
+        "-DWITH_PREFER_STATIC=${WITH_PREFER_STATIC}"
         "-DROOT_THREAD=FALSE"
         RESULT_VARIABLE ERROR)
     if (ERROR)
@@ -64,7 +66,7 @@ message("** Finding libraries")
 # static libraries
 if (WITH_STATIC)
 endif()
-if (WITH_BUILD_STATIC)
+if (WITH_PREFER_STATIC)
     set(BOOST_USE_STATIC_LIBS ON)
     set(Boost_USE_STATIC_RUNTIME ON)
     # prefer static libs
@@ -117,11 +119,11 @@ configure_file(config.h.in config.h)
 
 # build settings
 set(QT_USE_QTOPENGL TRUE)
-if (WITH_BUILD_STATIC)
+add_definitions(-DBOOST_THREAD_USE_LIB)
+if (WITH_PREFER_STATIC OR MINGW)
     add_definitions(-DOSG_LIBRARY_STATIC)
-    add_definitions(-DBOOST_THREAD_USE_LIB)
 endif()
-find_package(OpenSceneGraph 2.8.0 REQUIRED COMPONENTS osgViewer osgUtil osgDB osgGA osgManipulator)
+find_package(OpenSceneGraph 2.8.0 REQUIRED osgViewer osgUtil osgDB osgGA osgManipulator)
 if (MSVC)
     add_definitions( -D_USE_MATH_DEFINES)
 endif()
@@ -184,36 +186,40 @@ if(MINGW)
 endif()
 
 # static library
-add_library(arkosgStatic STATIC ${ARKOSG_SRCS} ${ARKOSG_PUBLIC_HDRS} ${ARKOSG_PRIVATE_HDRS})
-set(ARKOSG_STATIC_LIBNAME "arkosg")
-if (MSVC)
-    set(ARKOSG_STATIC_LIBNAME "arkosgStatic")
+if (WITH_BUILD_STATIC)
+    add_library(arkosgStatic STATIC ${ARKOSG_SRCS} ${ARKOSG_PUBLIC_HDRS} ${ARKOSG_PRIVATE_HDRS})
+    set(ARKOSG_STATIC_LIBNAME "arkosg")
+    if (MSVC)
+        set(ARKOSG_STATIC_LIBNAME "arkosgStatic")
+    endif()
+    set_target_properties(arkosgStatic PROPERTIES 
+        OUTPUT_NAME ${ARKOSG_STATIC_LIBNAME}
+        VERSION ${LIBRARY_VERSION} 
+        PUBLIC_HEADER "${ARKOSG_PUBLIC_HDRS}"
+        PRIVATE_HEADER "${ARKOSG_PRIVATE_HDRS}"
+        )
+    target_link_libraries(arkosgStatic ${ARKOSG_LINK_LIBRARIES})
+    list(APPEND INSTALLED_TARGETS arkosgStatic)
 endif()
-set_target_properties(arkosgStatic PROPERTIES 
-    OUTPUT_NAME ${ARKOSG_STATIC_LIBNAME}
-    VERSION ${LIBRARY_VERSION} 
-    #PUBLIC_HEADER ${ARKOSG_PUBLIC_HDRS}
-    #PRIVATE_HEADER ${ARKOSG_PRIVATE_HDRS}
-    )
-target_link_libraries(arkosgStatic ${ARKOSG_LINK_LIBRARIES})
-list(APPEND INSTALLED_TARGETS arkosgStatic)
 
 # shared library
-add_library(arkosgShared SHARED ${ARKOSG_SRCS} ${ARKOSG_PUBLIC_HDRS} ${ARKOSG_PRIVATE_HDRS})
-set_target_properties(arkosgShared PROPERTIES 
-    OUTPUT_NAME arkosg
-    VERSION ${LIBRARY_VERSION} 
-    SOVERSION ${LIBRARY_SOVERSION}
-    FRAMEWORK ON
-    PUBLIC_HEADER "${ARKOSG_PUBLIC_HDRS}"
-    PRIVATE_HEADER "${ARKOSG_PRIVATE_HDRS}"
-    )
-target_link_libraries(arkosgShared ${ARKOSG_LINK_LIBRARIES})
-list(APPEND INSTALLED_TARGETS arkosgShared)
+if (WITH_BUILD_SHARED)
+    add_library(arkosgShared SHARED ${ARKOSG_SRCS} ${ARKOSG_PUBLIC_HDRS} ${ARKOSG_PRIVATE_HDRS})
+    set_target_properties(arkosgShared PROPERTIES 
+        OUTPUT_NAME arkosg
+        VERSION ${LIBRARY_VERSION} 
+        SOVERSION ${LIBRARY_SOVERSION}
+        FRAMEWORK ON
+        PUBLIC_HEADER "${ARKOSG_PUBLIC_HDRS}"
+        PRIVATE_HEADER "${ARKOSG_PRIVATE_HDRS}"
+        )
+    target_link_libraries(arkosgShared ${ARKOSG_LINK_LIBRARIES})
+    list(APPEND INSTALLED_TARGETS arkosgShared)
+endif()
 
 
 # test
-if (WITH_TESTS)
+if (WITH_BUILD_TESTS)
     set(ARKOSG_TEST_MOC_SCRS
         test/MainWindow.hpp
         )
@@ -233,7 +239,7 @@ if (WITH_TESTS)
         ${ARKOSG_TEST_RES}
         )
     add_executable(arkosgTest WIN32 MACOSX_BUNDLE ${ARKOSG_TEST_SRC})
-    target_link_libraries(arkosgTest arkosgStatic)
+    target_link_libraries(arkosgTest arkosgStatic ${ARKOSG_LINK_LIBRARIES})
     list(APPEND INSTALLED_TARGETS arkosgTest)
 endif()
 
@@ -263,7 +269,7 @@ if (APPLE)
     # set where in the bundle to put the icns file
     set_source_files_properties(cmake/arkosg.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
     # include the icns file in the target
-    list(APPEND ARKOSGGUI_SRCS cmake/arkosg.icns)
+    list(APPEND ARKOSG_TEST_SRCS cmake/arkosg.icns)
 endif(APPLE)
 
 # set NSIS image
@@ -289,7 +295,7 @@ set(CPACK_PACKAGE_EXECUTABLES
     #"cmd" "Command Line"
     #"gui" "Gui"
     )
-if (WITH_TESTS)
+if (WITH_BUILD_TESTS)
     list(APPEND CPACK_PACKAGE_EXECUTABLES "arkosgTest" "test")
 endif()
 include(CPack)
