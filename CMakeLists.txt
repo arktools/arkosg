@@ -25,7 +25,6 @@ set(INSTALLED_TARGETS "")
 
 # modules
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_SOURCE_DIR}/cmake/arkcmake)
-include(BundleUtilities)
 include(CheckIncludeFiles)
 include(CheckFunctionExists)
 include(CheckSymbolExists)
@@ -143,7 +142,7 @@ include_directories(
     )
 link_directories(
     ${OPENSCENEGRAPH_LIBRARY_DIRS}
-    ${QT_LIBRARY_DIRS}
+    ${QT_LIBRARY_DIR}
     ) 
 
 # install data files
@@ -246,6 +245,7 @@ if (WITH_BUILD_TESTS)
     endif()
     target_link_libraries(arkosgTest arkosgStatic ${ARKOSG_LINK_LIBRARIES})
     list(APPEND INSTALLED_TARGETS arkosgTest)
+
 endif()
 
 # install
@@ -267,6 +267,20 @@ if (EXISTS ${EP_BASE_DIR}/${CMAKE_INSTALL_PREFIX}/)
 endif()
 
 ### packaging
+
+# bundle dependencies
+if (WITH_BUILD_TESTS)
+    set(APPS "\$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/arkosgTest")  # paths to executables
+    INSTALL(CODE "
+        set(DIRS \"${QT_LIBRARY_DIR}\") # directories to search for prerequisites
+        message(STATUS \"DIRS: \${DIRS}\")
+        file(GLOB_RECURSE QTPLUGINS
+            \"${QT_PLUGINS_DIR}/*${CMAKE_SHARED_LIBRARY_SUFFIX}\")
+        include(BundleUtilities)
+        fixup_bundle(\"${APPS}\"   \"\${QTPLUGINS}\"   \"\${DIRS}\")
+        " COMPONENT Runtime)
+endif()
+
 # set icns file containing icons
 if (APPLE)
     # set how it shows up in Info.plist
