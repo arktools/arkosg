@@ -65,8 +65,6 @@ list(APPEND CMAKE_FIND_ROOT_PATH ${EP_BASE_DIR})
 message("** Finding libraries")
 
 # static libraries
-if (WITH_STATIC)
-endif()
 if (WITH_PREFER_STATIC)
     set(Boost_USE_STATIC_LIBS ON)
     set(Boost_USE_STATIC_RUNTIME ON)
@@ -199,7 +197,6 @@ set_target_properties(arkosgStatic PROPERTIES
     PUBLIC_HEADER "${ARKOSG_PUBLIC_HDRS}"
     PRIVATE_HEADER "${ARKOSG_PRIVATE_HDRS}"
     )
-target_link_libraries(arkosgStatic ${ARKOSG_LINK_LIBRARIES})
 list(APPEND INSTALLED_TARGETS arkosgStatic)
 
 # shared library
