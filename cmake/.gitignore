@@ -1,0 +1,4 @@
+# only keep relevant arkcmake files
+arkcmake/*
+!arkcmake/LibFindMacros.cmake
+!arkcmake/updateArkcmake.py

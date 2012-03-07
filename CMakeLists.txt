@@ -29,6 +29,7 @@ include(CheckIncludeFiles)
 include(CheckFunctionExists)
 include(CheckSymbolExists)
 include(CheckLibraryExists)
+include(LibFindMacros)
 #include(CheckTypeSize)
 #include(CheckPrototypeExists)
 #include(CheckCXXSourceCompiles)
@@ -124,6 +125,21 @@ if (WITH_PREFER_STATIC OR MINGW)
     add_definitions(-DOSG_LIBRARY_STATIC)
 endif()
 find_package(OpenSceneGraph 2.8.0 REQUIRED COMPONENTS osgViewer osgUtil osgDB osgGA osgManipulator)
+
+ # find osg plugins
+get_filename_component(OSG_LIBRARY_ROOT "${OSG_LIBRARY}" PATH)
+find_library(OSG_AC
+    NAMES osgdb_ac
+    PATHS ${OSG_LIBRARY_ROOT}/osgPlugins-${OPENSCENEGRAPH_VERSION}
+    )
+find_library(OSG_RGB
+    NAMES osgdb_rgb
+    PATHS ${OSG_LIBRARY_ROOT}/osgPlugins-${OPENSCENEGRAPH_VERSION}
+    )
+set(OSG_PLUGINS_PROCESS_LIBS OSG_AC OSG_RGB)
+set(OSG_PLUGINS_PROCESS_INCLUDES)
+libfind_process(OSG_PLUGINS)
+
 if (MSVC)
     add_definitions( -D_USE_MATH_DEFINES)
 endif()
@@ -174,6 +190,7 @@ endif()
 # link libraries
 set(ARKOSG_LINK_LIBRARIES
     ${Boost_LIBRARIES}
+    ${OSG_PLUGINS_LIBRARIES}
     ${OPENSCENEGRAPH_LIBRARIES} 
     ${OPENGL_LIBRARIES}
     ${QT_LIBRARIES}
