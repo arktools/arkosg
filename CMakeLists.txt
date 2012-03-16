@@ -18,6 +18,7 @@ option(WITH_BUILD_DEPS "Build dependencies." OFF)
 option(WITH_PREFER_STATIC "Build preferring static linking." ON)
 option(WITH_BUILD_TESTS "Build a test application with QT" OFF)
 option(WITH_BUILD_SHARED "Build shared library." OFF)
+option(WITH_BUNDLE "Build executables." OFF)
 
 # variables
 set(ROOT_THREAD TRUE CACHE INTERNAL "Is this the top level of the recursion?")
@@ -117,7 +118,7 @@ endif()
 # config files
 set(INSTALL_DATA_DIR "${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME}")
 configure_file(config.h.in config.h)
-install(DIRECTORY ${CMAKE_BINARY_DIR}/config.h DESTINATION include/${PROJECT_NAME} COMPONENT Dev)
+install(FILES ${CMAKE_BINARY_DIR}/config.h DESTINATION include/${PROJECT_NAME} COMPONENT Dev)
 
 # build settings
 set(QT_USE_QTOPENGL TRUE)
@@ -279,7 +280,7 @@ install(TARGETS  ${INSTALLED_TARGETS}
 ### packaging
 
 # bundle dependencies
-if (WITH_BUILD_TESTS)
+if (WITH_BUILD_TESTS AND WITH_BUNDLE)
     set(APPS "\$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/arkosgTest")  # paths to executables
     INSTALL(CODE "
         set(DIRS \"${QT_LIBRARY_DIR}\") # directories to search for prerequisites
