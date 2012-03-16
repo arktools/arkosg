@@ -4,7 +4,7 @@ project (arkosg CXX C)
 cmake_minimum_required (VERSION 2.8)
 set(PROJECT_VERSION_MAJOR "0")
 set(PROJECT_VERSION_MINOR "2")
-set(PROJECT_VERSION_PATCH "1")
+set(PROJECT_VERSION_PATCH "3")
 set(PROJECT_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}")
 set(PROJECT_CONTACT_EMAIL james.goppert@gmail.com)
 set(PROJECT_CONTACT_VENDOR arkTools)
@@ -117,6 +117,7 @@ endif()
 # config files
 set(INSTALL_DATA_DIR "${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME}")
 configure_file(config.h.in config.h)
+install(DIRECTORY ${CMAKE_BINARY_DIR}/config.h DESTINATION include/${PROJECT_NAME} COMPONENT Dev)
 
 # build settings
 set(QT_USE_QTOPENGL TRUE)
@@ -274,11 +275,6 @@ install(TARGETS  ${INSTALLED_TARGETS}
     PUBLIC_HEADER DESTINATION "include/arkosg" COMPONENT Runtime
     RESOURCE DESTINATION "share/arkosg" COMPONENT Runtime
     )
-
-# install external projects, if built
-if (EXISTS ${EP_BASE_DIR}/${CMAKE_INSTALL_PREFIX}/)
-    install(DIRECTORY ${EP_BASE_DIR}/${CMAKE_INSTALL_PREFIX}/ DESTINATION ${CMAKE_INSTALL_PREFIX} COMPONENT Runtime)
-endif()
 
 ### packaging
 
