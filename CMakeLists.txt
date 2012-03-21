@@ -153,7 +153,7 @@ include_directories(
     ${CMAKE_BINARY_DIR}
     ${OPENSCENEGRAPH_INCLUDE_DIRS}
     ${Boost_INCLUDE_DIRS}
-	${QT_INCLUDE_DIRS}
+    ${QT_INCLUDE_DIRS}
     ${OPENGL_INCLUDE_DIR}
     )
 link_directories(
@@ -167,24 +167,24 @@ install(DIRECTORY "data/models" DESTINATION share/${PROJECT_NAME} COMPONENT Runt
 
 # arkosg library
 set(ARKOSG_SRCS
-	src/osgUtils.cpp
-	src/Viewer.cpp
-	src/terrain.cpp
-	)
+    src/osgUtils.cpp
+    src/Viewer.cpp
+    src/terrain.cpp
+    )
 set(ARKOSG_HDRS
-	src/osgUtils.hpp
-	src/Viewer.hpp
-	src/terrain_coords.h
-	src/terrain_normals.h
-	src/terrain_texcoords.h
-	)
+    src/osgUtils.hpp
+    src/Viewer.hpp
+    src/terrain_coords.h
+    src/terrain_normals.h
+    src/terrain_texcoords.h
+    )
 if(QT_FOUND)
-	list(APPEND ARKOSG_SRCS
-		src/QOSGAdapterWidget.cpp
-	)
-	list(APPEND ARKOSG_HDRS
-		src/QOSGAdapterWidget.hpp
-	)
+    list(APPEND ARKOSG_SRCS
+        src/QOSGAdapterWidget.cpp
+    )
+    list(APPEND ARKOSG_HDRS
+        src/QOSGAdapterWidget.hpp
+    )
 endif()
 
 # install headers
@@ -202,7 +202,7 @@ if(MINGW)
     list(APPEND ARKOSG_LINK_LIBRARIES 
         lcms
         lzma
-    )		
+    )       
 endif()
 
 # static library
