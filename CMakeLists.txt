@@ -171,15 +171,13 @@ set(ARKOSG_SRCS
 	src/Viewer.cpp
 	src/terrain.cpp
 	)
-set(ARKOSG_PUBLIC_HDRS
+set(ARKOSG_HDRS
 	src/osgUtils.hpp
 	src/Viewer.hpp
 	src/terrain_coords.h
 	src/terrain_normals.h
 	src/terrain_texcoords.h
 	)
-set(ARKOSG_PRIVATE_HDRS
-    )
 if(QT_FOUND)
 	list(APPEND ARKOSG_SRCS
 		src/QOSGAdapterWidget.cpp
@@ -188,6 +186,9 @@ if(QT_FOUND)
 		src/QOSGAdapterWidget.hpp
 	)
 endif()
+
+# install headers
+install(FILES ${ARKOSG_HDRS} DESTINATION include/arkosg COMPONENT Dev)
 
 # link libraries
 set(ARKOSG_LINK_LIBRARIES
@@ -205,7 +206,7 @@ if(MINGW)
 endif()
 
 # static library
-add_library(arkosgStatic STATIC ${ARKOSG_SRCS} ${ARKOSG_PUBLIC_HDRS} ${ARKOSG_PRIVATE_HDRS})
+add_library(arkosgStatic STATIC ${ARKOSG_SRCS} ${ARKOSG_HDRS})
 set(ARKOSG_STATIC_LIBNAME "arkosg")
 if (MSVC)
     set(ARKOSG_STATIC_LIBNAME "arkosgStatic")
@@ -213,26 +214,21 @@ endif()
 set_target_properties(arkosgStatic PROPERTIES 
     OUTPUT_NAME ${ARKOSG_STATIC_LIBNAME}
     VERSION ${LIBRARY_VERSION} 
-    PUBLIC_HEADER "${ARKOSG_PUBLIC_HDRS}"
-    PRIVATE_HEADER "${ARKOSG_PRIVATE_HDRS}"
     )
-install(TARGETS  ${INSTALLED_TARGETS}
-    LIBRARY DESTINATION "lib" COMPONENT Runtime
+install(TARGETS arkosgStatic 
+    ARCHIVE DESTINATION "lib" COMPONENT Runtime
     )
 
 # shared library
 if (WITH_BUILD_SHARED)
-    add_library(arkosgShared SHARED ${ARKOSG_SRCS} ${ARKOSG_PUBLIC_HDRS} ${ARKOSG_PRIVATE_HDRS})
+    add_library(arkosgShared SHARED ${ARKOSG_SRCS} ${ARKOSG_HDRS})
     set_target_properties(arkosgShared PROPERTIES 
         OUTPUT_NAME arkosg
         VERSION ${LIBRARY_VERSION} 
         SOVERSION ${LIBRARY_SOVERSION}
         FRAMEWORK ON
-        PUBLIC_HEADER "${ARKOSG_PUBLIC_HDRS}"
-        PRIVATE_HEADER "${ARKOSG_PRIVATE_HDRS}"
         )
     target_link_libraries(arkosgShared ${ARKOSG_LINK_LIBRARIES})
-    list(APPEND INSTALLED_TARGETS arkosgShared)
     install(TARGETS arkosgShared
         LIBRARY DESTINATION "lib" COMPONENT Runtime
         FRAMEWORK DESTINATION "/Library/Frameworks" COMPONENT Runtime
@@ -269,25 +265,11 @@ if (WITH_BUILD_TESTS)
         add_executable(arkosgTest WIN32 MACOSX_BUNDLE ${ARKOSG_TEST_SRC})
     endif()
     target_link_libraries(arkosgTest arkosgStatic ${ARKOSG_LINK_LIBRARIES})
-    list(APPEND INSTALLED_TARGETS arkosgTest)
     install(TARGETS arkosgTest
         RUNTIME DESTINATION "bin" COMPONENT Runtime
         BUNDLE DESTINATION "/Applications" COMPONENT Runtime
         )
 endif()
-
-# install
-install(TARGETS  ${INSTALLED_TARGETS}
-    RUNTIME DESTINATION "bin" COMPONENT Runtime
-    LIBRARY DESTINATION "lib" COMPONENT Runtime
-    ARCHIVE DESTINATION "lib" COMPONENT Dev
-    BUNDLE DESTINATION "/Applications" COMPONENT Runtime
-    FRAMEWORK DESTINATION "/Library/Frameworks" COMPONENT Runtime
-    # where to put files on non-mac computers, mac overrides and uses default
-    PRIVATE_HEADER DESTINATION "include/arkosg" COMPONENT Runtime
-    PUBLIC_HEADER DESTINATION "include/arkosg" COMPONENT Runtime
-    RESOURCE DESTINATION "share/arkosg" COMPONENT Runtime
-    )
 
 ### packaging
 
