@@ -11,7 +11,9 @@ set(PROJECT_CONTACT_VENDOR arkTools)
 set(LIBRARY_VERSION ${PROJECT_VERSION})
 set(LIBRARY_SOVERSION "0.0.0")
 
-# third party libraries to build (none currently)
+# third party libraries
+set(BOOST_REQUIRED_VERSION "1.4.2")
+set(QT_REQUIRED_VERSION "4.6.3")
 
 # options
 option(WITH_BUILD_DEPS "Build dependencies." OFF)
@@ -19,23 +21,24 @@ option(WITH_PREFER_STATIC "Build preferring static linking." ON)
 option(WITH_BUILD_TESTS "Build a test application with QT" OFF)
 option(WITH_BUILD_SHARED "Build shared library." OFF)
 option(WITH_BUNDLE "Build executables." OFF)
+option(WITH_WARNINGS "Enable warnings." OFF)
 
 # variables
 set(ROOT_THREAD TRUE CACHE INTERNAL "Is this the top level of the recursion?")
-set(INSTALLED_TARGETS "")
 
 # modules
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_SOURCE_DIR}/cmake/arkcmake)
+include(DefineCMakeDefaults)
+include(DefineCompilerFlags)
 include(CheckIncludeFiles)
 include(CheckFunctionExists)
 include(CheckSymbolExists)
 include(CheckLibraryExists)
-include(LibFindMacros)
 #include(CheckTypeSize)
 #include(CheckPrototypeExists)
 #include(CheckCXXSourceCompiles)
 #include(CheckCSourceCompiles)
-include(ExternalProject)
+include(ExternalProjectWithFilename)
 
 # spawn new cmake to build deps
 if (WITH_BUILD_DEPS AND ROOT_THREAD)
@@ -44,8 +47,6 @@ if (WITH_BUILD_DEPS AND ROOT_THREAD)
         "-DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}"
         "-DEP_BASE_DIR=${EP_BASE_DIR}"
         "-DWITH_BUILD_DEPS=${WITH_BUILD_DEPS}"
-        "-DWITH_BUILD_TESTS=${WITH_BUILD_TESTS}"
-        "-DWITH_BUILD_SHARED=${WITH_BUILD_SHARED}"
         "-DWITH_PREFER_STATIC=${WITH_PREFER_STATIC}"
         "-DROOT_THREAD=FALSE"
         RESULT_VARIABLE ERROR)
@@ -79,16 +80,18 @@ if (WITH_PREFER_STATIC)
 endif()
 
 # find libraries with cmake modules
-find_package(Qt4 REQUIRED)
-find_packagE(OpenGL REQUIRED)
+find_package(Qt4 ${QT_REQUIRED_VERSION} REQUIRED)
+find_package(OpenGL REQUIRED)
+find_package(OpenSceneGraph ${OPENSCENEGRAPH_REQUIRED_VERSION} REQUIRED COMPONENTS osgViewer osgUtil osgDB osgGA osgManipulator)
+find_package(OsgPlugin ${OPENSCENEGRAPH_REQUIRED_VERSION} ${REQUIRED_IF_ROOT_THREAD} COMPONENTS ac rgb)
 
 if(MSVC)
     set(Boost_USE_MULTITHREADED ON)
-    find_package(Boost 1.40.0 REQUIRED COMPONENTS thread system)
+    find_package(Boost ${BOOST_REQUIRED_VERSION} REQUIRED COMPONENTS thread system)
 elseif(MINGW)
-    find_package(Boost 1.40.0 REQUIRED COMPONENTS thread_win32-mt system-mt)
+    find_package(Boost ${BOOST_REQUIRED_VERSION} REQUIRED COMPONENTS thread_win32-mt system-mt)
 else()
-    find_package(Boost 1.40.0 REQUIRED COMPONENTS thread-mt system-mt)
+    find_package(Boost ${BOOST_REQUIRED_VERSION} REQUIRED COMPONENTS thread-mt system-mt)
 endif()
 
 # build dependencies
@@ -126,27 +129,24 @@ add_definitions(-DBOOST_THREAD_USE_LIB)
 if (WITH_PREFER_STATIC OR MINGW)
     add_definitions(-DOSG_LIBRARY_STATIC)
 endif()
-find_package(OpenSceneGraph 2.8.0 REQUIRED COMPONENTS osgViewer osgUtil osgDB osgGA osgManipulator)
-
- # find osg plugins
-get_filename_component(OSG_LIBRARY_ROOT "${OSG_LIBRARY}" PATH)
-find_library(OSG_AC
-    NAMES osgdb_ac
-    PATHS ${OSG_LIBRARY_ROOT}/osgPlugins-${OPENSCENEGRAPH_VERSION}
-    )
-find_library(OSG_RGB
-    NAMES osgdb_rgb
-    PATHS ${OSG_LIBRARY_ROOT}/osgPlugins-${OPENSCENEGRAPH_VERSION}
-    )
-set(OSG_PLUGINS_PROCESS_LIBS OSG_AC OSG_RGB)
-set(OSG_PLUGINS_PROCESS_INCLUDES)
-libfind_process(OSG_PLUGINS)
-
 if (MSVC)
     add_definitions( -D_USE_MATH_DEFINES)
 endif()
 include( ${QT_USE_FILE})
 add_definitions(-DUSE_QT4)
+
+if (WITH_WARNINGS)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu99 -pedantic")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Wshadow -Wmissing-prototypes -Wdeclaration-after-statement")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wunused -Wfloat-equal -Wpointer-arith -Wwrite-strings -Wformat-security")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wmissing-format-attribute")
+
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wshadow")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wunused -Wfloat-equal -Wpointer-arith -Wwrite-strings -Wformat-security")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wmissing-format-attribute")
+endif()
+
 include_directories(
     ${CMAKE_SOURCE_DIR}
     ${CMAKE_SOURCE_DIR}/src
@@ -216,7 +216,9 @@ set_target_properties(arkosgStatic PROPERTIES
     PUBLIC_HEADER "${ARKOSG_PUBLIC_HDRS}"
     PRIVATE_HEADER "${ARKOSG_PRIVATE_HDRS}"
     )
-list(APPEND INSTALLED_TARGETS arkosgStatic)
+install(TARGETS  ${INSTALLED_TARGETS}
+    LIBRARY DESTINATION "lib" COMPONENT Runtime
+    )
 
 # shared library
 if (WITH_BUILD_SHARED)
@@ -231,8 +233,15 @@ if (WITH_BUILD_SHARED)
         )
     target_link_libraries(arkosgShared ${ARKOSG_LINK_LIBRARIES})
     list(APPEND INSTALLED_TARGETS arkosgShared)
+    install(TARGETS arkosgShared
+        LIBRARY DESTINATION "lib" COMPONENT Runtime
+        FRAMEWORK DESTINATION "/Library/Frameworks" COMPONENT Runtime
+        # where to put files on non-mac computers, mac overrides and uses default
+        PRIVATE_HEADER DESTINATION "include/arkosg" COMPONENT Runtime
+        PUBLIC_HEADER DESTINATION "include/arkosg" COMPONENT Runtime
+        RESOURCE DESTINATION "share/arkosg" COMPONENT Runtime
+        )
 endif()
-
 
 # test
 if (WITH_BUILD_TESTS)
@@ -261,7 +270,10 @@ if (WITH_BUILD_TESTS)
     endif()
     target_link_libraries(arkosgTest arkosgStatic ${ARKOSG_LINK_LIBRARIES})
     list(APPEND INSTALLED_TARGETS arkosgTest)
-
+    install(TARGETS arkosgTest
+        RUNTIME DESTINATION "bin" COMPONENT Runtime
+        BUNDLE DESTINATION "/Applications" COMPONENT Runtime
+        )
 endif()
 
 # install

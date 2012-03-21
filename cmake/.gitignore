@@ -1,4 +1,9 @@
 # only keep relevant arkcmake files
 arkcmake/*
-!arkcmake/LibFindMacros.cmake
 !arkcmake/updateArkcmake.py
+!arkcmake/DefineCMakeDefaults.cmake
+!arkcmake/DefineCompilerFlags.cmake
+!arkcmake/MacroCheckCCompilerFlagSSP.cmake
+!arkcmake/MacroEnsureOutOfSourceBuild.cmake
+!arkcmake/ExternalProjectWithFilename.cmake
+!arkcmake/FindOsgPlugin.cmake
