@@ -129,6 +129,11 @@ add_definitions(-DBOOST_THREAD_USE_LIB)
 if (WITH_PREFER_STATIC OR MINGW)
     add_definitions(-DOSG_LIBRARY_STATIC)
 endif()
+if(APPLE)
+    set(CMAKE_OSX_ARCHITECTURES "x86_64" CACHE STRING "Build architectures for OSX" FORCE)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmacosx-version-min=10.5 -ftree-vectorize -fvisibility-inlines-hidden" CACHE STRING "Flags used by the compiler during all build types." FORCE)
+    set(CMAKE_EXE_LINKER_FLAGS "-framework cocoa -framework carbon")
+endif()
 if (MSVC)
     add_definitions( -D_USE_MATH_DEFINES)
 endif()
@@ -193,7 +198,7 @@ install(FILES ${ARKOSG_HDRS} DESTINATION include/arkosg COMPONENT Dev)
 # link libraries
 set(ARKOSG_LINK_LIBRARIES
     ${Boost_LIBRARIES}
-    ${OSG_PLUGINS_LIBRARIES}
+    ${OSGPLUGIN_LIBRARIES}
     ${OPENSCENEGRAPH_LIBRARIES} 
     ${OPENGL_LIBRARIES}
     ${QT_LIBRARIES}
@@ -269,6 +274,10 @@ if (WITH_BUILD_TESTS)
         RUNTIME DESTINATION "bin" COMPONENT Runtime
         BUNDLE DESTINATION "/Applications" COMPONENT Runtime
         )
+    if(APPLE)
+        add_custom_command(TARGET arkosgTest POST_BUILD COMMAND macdeployqt ${CMAKE_BINARY_DIR}/arkosgTest.app)
+        add_custom_command(TARGET arkosgTest POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory /opt/local/lib/Resources/qt_menu.nib ${CMAKE_BINARY_DIR}/arkosgTest.app/Contents/Resources/qt_menu.nib)
+    endif()
 endif()
 
 ### packaging
