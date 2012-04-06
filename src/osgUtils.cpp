@@ -519,7 +519,7 @@ void Car::setPositionScalars(double x, double y, double z)
     setPosition(osg::Vec3(x,y,z));
 }
 
-void Car::setU(double throttle, double steering, double velocity)
+void Car::setU(double throttle, double steering)
 {
 	myWheelLF->setAttitude(osg::Quat(
 					myTireAngleLF-=0.5*throttle,osg::Vec3(0,0,1),

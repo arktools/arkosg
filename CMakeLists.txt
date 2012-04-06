@@ -83,7 +83,9 @@ endif()
 find_package(Qt4 ${QT_REQUIRED_VERSION} REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(OpenSceneGraph ${OPENSCENEGRAPH_REQUIRED_VERSION} REQUIRED COMPONENTS osgViewer osgUtil osgDB osgGA osgManipulator)
-find_package(OsgPlugin ${OPENSCENEGRAPH_REQUIRED_VERSION} ${REQUIRED_IF_ROOT_THREAD} COMPONENTS ac rgb)
+if(NOT MSVC)
+    find_package(OsgPlugin ${OPENSCENEGRAPH_REQUIRED_VERSION} ${REQUIRED_IF_ROOT_THREAD} COMPONENTS ac rgb)
+endif()
 
 if(MSVC)
     set(Boost_USE_MULTITHREADED ON)
@@ -224,6 +226,14 @@ install(TARGETS arkosgStatic
     ARCHIVE DESTINATION "lib" COMPONENT Runtime
     )
 
+if (MSVC)
+     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /FORCE:Multiple")
+# for some strange reason /EHsc needs to be set twice
+     SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc")
+     SET_TARGET_PROPERTIES(arkosgStatic PROPERTIES COMPILER_FLAGS "/EHsc")
+
+ endif()
+ 
 # shared library
 if (WITH_BUILD_SHARED)
     add_library(arkosgShared SHARED ${ARKOSG_SRCS} ${ARKOSG_HDRS})

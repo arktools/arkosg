@@ -181,7 +181,7 @@ public:
     Car(std::string modelFile);
     void setEuler(double roll, double pitch, double yaw);
     void setPositionScalars(double x, double y, double z);
-    void setU(double throttle, double steering, double velocity);
+    void setU(double throttle, double steering);
 private:
     osg::ref_ptr<osg::Node> model;
 	osg::ref_ptr<osg::PositionAttitudeTransform> modelPat;
